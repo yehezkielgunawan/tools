@@ -1,5 +1,13 @@
 # Yehezgun Tools
 
+<p align="center">
+  <img
+    src="./public/tools-yehezgun.png"
+    alt="Yehezgun Tools"
+    width="760"
+  />
+</p>
+
 Small browser-first utilities for everyday work.
 
 ## Local Development
