@@ -1,5 +1,5 @@
 import { expect, test } from '@rstest/core';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import App from '../src/app/App';
 
@@ -13,11 +13,12 @@ test('renders the homepage with both registered tools', () => {
   expect(
     screen.getByRole('heading', { name: /small tools for everyday work/i }),
   ).toBeInTheDocument();
+  const main = within(screen.getByRole('main'));
   expect(
-    screen.getByRole('link', { name: /whatsapp link generator/i }),
+    main.getByRole('link', { name: /whatsapp link generator/i }),
   ).toBeInTheDocument();
   expect(
-    screen.getByRole('link', { name: /json formatter/i }),
+    main.getByRole('link', { name: /json formatter/i }),
   ).toBeInTheDocument();
 });
 

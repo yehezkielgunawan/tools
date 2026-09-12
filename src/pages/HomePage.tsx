@@ -1,11 +1,5 @@
 import ToolCard from '../components/ui/ToolCard';
-import { type ToolCategory, tools } from '../tools/registry';
-
-const categories: readonly ToolCategory[] = ['generator', 'developer'];
-
-function categoryLabel(category: ToolCategory): string {
-  return category === 'developer' ? 'Developer' : 'Generator';
-}
+import { toolCategories, tools } from '../tools/registry';
 
 export default function HomePage() {
   return (
@@ -24,19 +18,19 @@ export default function HomePage() {
       </div>
 
       <div className="mt-14 space-y-10">
-        {categories.map((category) => {
+        {toolCategories.map((category) => {
           const categoryTools = tools.filter(
-            (tool) => tool.category === category,
+            (tool) => tool.category === category.id,
           );
 
           return (
-            <section aria-labelledby={`${category}-tools`} key={category}>
+            <section aria-labelledby={`${category.id}-tools`} key={category.id}>
               <div className="mb-4 flex items-center gap-3">
                 <h2
                   className="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/50"
-                  id={`${category}-tools`}
+                  id={`${category.id}-tools`}
                 >
-                  {categoryLabel(category)}
+                  {category.label}
                 </h2>
                 <div className="h-px flex-1 bg-base-300" />
               </div>
