@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "yehezgun-tools",
+  "compatibility_date": "2026-09-12",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [
+    {
+      "pattern": "tools.yehezgun.com",
+      "custom_domain": true
+    }
+  ]
+}
