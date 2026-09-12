@@ -11,6 +11,14 @@ export interface ToolDefinition {
   icon: ToolIconName;
 }
 
+export const toolCategories = [
+  { id: 'generator', label: 'Generator' },
+  { id: 'developer', label: 'Developer' },
+] as const satisfies readonly {
+  id: ToolCategory;
+  label: string;
+}[];
+
 export const tools = [
   {
     id: 'whatsapp-link',
