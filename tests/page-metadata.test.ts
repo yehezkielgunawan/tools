@@ -7,13 +7,13 @@ import {
 
 test('resolves homepage metadata with the approved copy', () => {
   expect(homePageMetadata).toEqual({
-    browserTitle: 'Yehezgun Tools | Browser-first utilities',
+    browserTitle: 'Yehezgun Tools | My unified toolkit',
     imageTitle: 'Yehezgun Tools',
     description:
-      'Small browser-first utilities for everyday work. No accounts, uploads, or unnecessary setup.',
+      'A customized collection of focused tools, organized in one place and ready whenever I need them.',
     canonicalUrl: 'https://tools.yehezgun.com/',
     ogImageUrl:
-      'https://og-image-rev.yehezgun.com/og?title=Yehezgun+Tools&description=Small+browser-first+utilities+for+everyday+work.+No+accounts%2C+uploads%2C+or+unnecessary+setup.&siteName=tools.yehezgun.com&social=yehezgun.com&cta=Explore+tools+%E2%86%92&image=https%3A%2F%2Ftools.yehezgun.com%2Fyehezgun-tools-og-logo.png',
+      'https://og-image-rev.yehezgun.com/og?title=Yehezgun+Tools&description=A+customized+collection+of+focused+tools%2C+organized+in+one+place+and+ready+whenever+I+need+them.&siteName=tools.yehezgun.com&social=yehezgun.com&cta=Explore+tools+%E2%86%92&image=https%3A%2F%2Ftools.yehezgun.com%2Fyehezgun-tools-og-logo.png',
   });
 });
 

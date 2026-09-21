@@ -26,7 +26,7 @@ export default class AppErrorBoundary extends Component<
   render() {
     if (this.state.hasError) {
       return (
-        <section className="mx-auto flex w-full max-w-4xl flex-col items-start px-4 py-20 sm:px-6">
+        <section className="mx-auto flex w-full max-w-5xl flex-col items-start px-4 py-20 sm:px-8">
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-error">
             Error
           </p>

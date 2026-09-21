@@ -8,7 +8,7 @@
   />
 </p>
 
-Small browser-first utilities for everyday work.
+A customized collection of focused tools, organized in one place and ready whenever I need them.
 
 ## Local Development
 
