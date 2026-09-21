@@ -1,3 +1,5 @@
+/// <reference types="rsbuild-plugin-pwa/types/react" />
+
 /**
  * Imports the SVG file as a React component.
  * @requires [@rsbuild/plugin-svgr](https://npmjs.com/package/@rsbuild/plugin-svgr)

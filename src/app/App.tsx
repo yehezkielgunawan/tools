@@ -1,4 +1,5 @@
 import AppShell from '../components/layout/AppShell';
+import PwaUpdatePrompt from '../pwa/PwaUpdatePrompt';
 import MetadataManager from '../seo/MetadataManager';
 import AppErrorBoundary from './AppErrorBoundary';
 import { AppRoutes } from './router';
@@ -14,6 +15,7 @@ export default function App({ initialTheme = 'light' }: AppProps) {
     <ThemeProvider initialTheme={initialTheme}>
       <AppShell>
         <MetadataManager />
+        <PwaUpdatePrompt />
         <AppErrorBoundary>
           <AppRoutes />
         </AppErrorBoundary>
