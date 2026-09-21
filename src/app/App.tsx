@@ -1,4 +1,5 @@
-import Header from '../components/layout/Header';
+import AppShell from '../components/layout/AppShell';
+import PwaUpdatePrompt from '../pwa/PwaUpdatePrompt';
 import MetadataManager from '../seo/MetadataManager';
 import AppErrorBoundary from './AppErrorBoundary';
 import { AppRoutes } from './router';
@@ -12,15 +13,13 @@ interface AppProps {
 export default function App({ initialTheme = 'light' }: AppProps) {
   return (
     <ThemeProvider initialTheme={initialTheme}>
-      <div className="min-h-screen bg-base-200 text-base-content">
+      <AppShell>
         <MetadataManager />
-        <Header />
+        <PwaUpdatePrompt />
         <AppErrorBoundary>
-          <main>
-            <AppRoutes />
-          </main>
+          <AppRoutes />
         </AppErrorBoundary>
-      </div>
+      </AppShell>
     </ThemeProvider>
   );
 }

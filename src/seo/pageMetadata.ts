@@ -6,7 +6,7 @@ const OG_SITE_NAME = 'tools.yehezgun.com';
 const OG_SOCIAL = 'yehezgun.com';
 const OG_LOGO_URL = 'https://tools.yehezgun.com/yehezgun-tools-og-logo.png';
 const HOMEPAGE_DESCRIPTION =
-  'Small browser-first utilities for everyday work. No accounts, uploads, or unnecessary setup.';
+  'A customized collection of focused tools, organized in one place and ready whenever I need them.';
 
 export interface PageMetadata {
   browserTitle: string;
@@ -64,7 +64,7 @@ function createPageMetadata({
 }
 
 export const homePageMetadata = createPageMetadata({
-  browserTitle: 'Yehezgun Tools | Browser-first utilities',
+  browserTitle: 'Yehezgun Tools | My unified toolkit',
   imageTitle: 'Yehezgun Tools',
   description: HOMEPAGE_DESCRIPTION,
   path: '/',

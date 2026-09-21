@@ -42,10 +42,10 @@ beforeEach(() => {
 test('updates homepage document metadata', () => {
   renderMetadataManager('/');
 
-  expect(document.title).toBe('Yehezgun Tools | Browser-first utilities');
+  expect(document.title).toBe('Yehezgun Tools | My unified toolkit');
   expect(document.querySelector('meta[name="description"]')).toHaveAttribute(
     'content',
-    'Small browser-first utilities for everyday work. No accounts, uploads, or unnecessary setup.',
+    'A customized collection of focused tools, organized in one place and ready whenever I need them.',
   );
   expect(document.querySelector('meta[property="og:url"]')).toHaveAttribute(
     'content',

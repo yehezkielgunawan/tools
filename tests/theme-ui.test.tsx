@@ -12,11 +12,13 @@ test('toggles and persists the selected theme', () => {
     </MemoryRouter>,
   );
 
-  fireEvent.click(screen.getByRole('button', { name: /switch to dark mode/i }));
+  fireEvent.click(
+    screen.getAllByRole('button', { name: /switch to dark mode/i })[0],
+  );
 
   expect(document.documentElement.dataset.theme).toBe('dark');
   expect(localStorage.getItem('theme')).toBe('dark');
   expect(
-    screen.getByRole('button', { name: /switch to light mode/i }),
+    screen.getAllByRole('button', { name: /switch to light mode/i })[0],
   ).toBeInTheDocument();
 });

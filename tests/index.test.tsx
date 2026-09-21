@@ -11,7 +11,7 @@ test('renders the homepage with both registered tools', () => {
   );
 
   expect(
-    screen.getByRole('heading', { name: /small tools for everyday work/i }),
+    screen.getByRole('heading', { name: /my unified toolkit/i }),
   ).toBeInTheDocument();
   const main = within(screen.getByRole('main'));
   expect(

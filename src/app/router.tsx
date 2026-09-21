@@ -9,7 +9,7 @@ const JsonFormatter = lazy(() => import('../tools/json-formatter'));
 function ToolLoading() {
   return (
     <div
-      className="mx-auto flex min-h-80 max-w-4xl items-center justify-center px-4"
+      className="mx-auto flex min-h-80 max-w-5xl items-center justify-center px-4 sm:px-8"
       role="status"
     >
       <span className="loading loading-spinner loading-sm" />

@@ -3,21 +3,21 @@ import { toolCategories, tools } from '../tools/registry';
 
 export default function HomePage() {
   return (
-    <section className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6 lg:py-20">
-      <div className="max-w-2xl">
+    <section className="mx-auto w-full max-w-5xl px-4 py-12 sm:px-8 lg:py-20">
+      <div className="max-w-3xl">
         <span className="badge badge-ghost mb-5 uppercase tracking-[0.16em]">
-          Browser-first utilities
+          Personal utility workspace
         </span>
-        <h1 className="text-4xl font-semibold tracking-[-0.03em] sm:text-6xl">
-          Small tools for everyday work.
+        <h1 className="text-4xl font-semibold tracking-[-0.04em] sm:text-6xl">
+          My unified toolkit.
         </h1>
-        <p className="mt-5 max-w-xl text-lg leading-8 text-base-content/60">
-          A quiet collection of focused utilities. No accounts, no uploads, and
-          no unnecessary setup.
+        <p className="mt-5 max-w-2xl text-lg leading-8 text-base-content/60">
+          A customized collection of focused tools, organized in one place and
+          ready whenever I need them.
         </p>
       </div>
 
-      <div className="mt-14 space-y-10">
+      <div className="mt-16 space-y-12">
         {toolCategories.map((category) => {
           const categoryTools = tools.filter(
             (tool) => tool.category === category.id,
@@ -34,7 +34,7 @@ export default function HomePage() {
                 </h2>
                 <div className="h-px flex-1 bg-base-300" />
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2">
                 {categoryTools.map((tool) => (
                   <ToolCard key={tool.id} tool={tool} />
                 ))}

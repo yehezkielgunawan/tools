@@ -1,6 +1,7 @@
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginTailwindcss } from '@rsbuild/plugin-tailwindcss';
+import { pluginPWA } from 'rsbuild-plugin-pwa';
 import { homePageMetadata } from './src/seo/pageMetadata';
 
 // Docs: https://rsbuild.rs/config/
@@ -10,6 +11,10 @@ export default defineConfig({
     title: homePageMetadata.browserTitle,
     meta: {
       description: homePageMetadata.description,
+      'theme-color': {
+        name: 'theme-color',
+        content: '#1478ff',
+      },
       'og:type': {
         property: 'og:type',
         content: 'website',
@@ -83,7 +88,68 @@ export default defineConfig({
           href: homePageMetadata.canonicalUrl,
         },
       },
+      {
+        tag: 'link',
+        attrs: {
+          href: '/apple-touch-icon.png',
+          rel: 'apple-touch-icon',
+        },
+      },
     ],
   },
-  plugins: [pluginReact(), pluginTailwindcss()],
+  plugins: [
+    pluginReact(),
+    pluginTailwindcss(),
+    pluginPWA({
+      registerSw: {
+        scope: '/',
+        type: 'virtual-module',
+      },
+      sw: {
+        includeWebAppManifestIcons: true,
+        mode: 'generateSw',
+        workboxOptions: {
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          navigateFallback: '/index.html',
+          skipWaiting: false,
+        },
+      },
+      webAppManifest: {
+        content: {
+          background_color: '#f7faff',
+          description:
+            'A customized collection of focused tools, organized in one place and ready whenever I need them.',
+          display: 'standalone',
+          icons: [
+            {
+              purpose: 'any',
+              sizes: '192x192',
+              src: '/pwa-icon-192.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'any',
+              sizes: '512x512',
+              src: '/pwa-icon-512.png',
+              type: 'image/png',
+            },
+            {
+              purpose: 'maskable',
+              sizes: '512x512',
+              src: '/pwa-maskable-512.png',
+              type: 'image/png',
+            },
+          ],
+          id: '/',
+          name: 'Yehezgun Tools',
+          orientation: 'any',
+          scope: '/',
+          short_name: 'Yehezgun Tools',
+          start_url: '/',
+          theme_color: '#1478ff',
+        },
+      },
+    }),
+  ],
 });
