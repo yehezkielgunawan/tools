@@ -6,6 +6,8 @@ const SECTION_HEADING_PATTERN = /^###\s+(.+?)\s*$/;
 const BULLET_PATTERN = /^\s*[*-]\s+(.+?)\s*$/;
 const SCOPED_CHANGE_PATTERN = /^\*\*([^*]+):\*\*\s*(.+)$/;
 const RELEASE_LINK_PATTERN = /\s+\(\[[^\]]+\]\([^)]+\)\)$/;
+const MARKDOWN_LINK_PATTERN = /\[([^\]]+)\]\([^)]+\)/g;
+const REFERENCE_LINK_PATTERN = /^\[[^\]]+\]:\s+\S+$/;
 
 const SECTION_TYPES: Record<string, ChangeType> = {
   features: 'features',
@@ -38,18 +40,18 @@ function getSectionType(section: string): ChangeType {
   return SECTION_TYPES[normalizedSection] ?? 'other';
 }
 
-function stripReleaseLinks(description: string): string {
+function normalizeDescription(description: string): string {
   let result = description;
 
   while (RELEASE_LINK_PATTERN.test(result)) {
     result = result.replace(RELEASE_LINK_PATTERN, '').trim();
   }
 
-  return result;
+  return result.replace(MARKDOWN_LINK_PATTERN, '$1').trim();
 }
 
 function parseChangeItem(value: string, lineNumber: number): ChangelogItem {
-  const withoutLinks = stripReleaseLinks(value);
+  const withoutLinks = normalizeDescription(value);
   const scopedChange = withoutLinks.match(SCOPED_CHANGE_PATTERN);
 
   if (!scopedChange) {
@@ -138,6 +140,15 @@ export function parseChangelog(markdown: string): ChangelogRelease[] {
       currentRelease.changes[currentSection]?.push(
         parseChangeItem(value, lineNumber),
       );
+      continue;
+    }
+
+    if (REFERENCE_LINK_PATTERN.test(line.trim())) {
+      continue;
+    }
+
+    if (currentRelease && line.trim()) {
+      throw invalidLine(lineNumber, 'unexpected content inside a release.');
     }
   }
 

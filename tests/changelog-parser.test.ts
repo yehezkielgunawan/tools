@@ -57,6 +57,24 @@ test('parses releases, sections, scopes, and release metadata', () => {
   ]);
 });
 
+test('normalizes inline markdown references in change descriptions', () => {
+  const markdown = `# Changelog
+
+## 1.0.0 (2026-09-23)
+
+### Fixes
+
+* **api:** Fix stale cache, closes [#42](https://github.com/example/tools/issues/42)
+`;
+
+  expect(parseChangelog(markdown)[0]?.changes.fixes).toEqual([
+    {
+      scope: 'api',
+      description: 'Fix stale cache, closes #42',
+    },
+  ]);
+});
+
 test('maps unrecognized sections to other', () => {
   const markdown = `# Changelog
 
@@ -97,6 +115,31 @@ test('rejects entries outside a section', () => {
   expect(() =>
     parseChangelog('# Changelog\n\n## 1.0.0 (2026-09-23)\n\n* Entry\n'),
   ).toThrow(/before a section/i);
+});
+
+test('rejects unexpected content inside a release', () => {
+  expect(() =>
+    parseChangelog(
+      '# Changelog\n\n## 1.0.0 (2026-09-23)\n\n### Features\n\nnot a bullet\n',
+    ),
+  ).toThrow(/unexpected content/i);
+});
+
+test('allows Release Please reference-link definitions', () => {
+  const markdown = `# Changelog
+
+## 1.0.0 (2026-09-23)
+
+### Features
+
+* Add the initial workspace
+
+[1.0.0]: https://github.com/example/tools/releases/tag/v1.0.0
+`;
+
+  expect(parseChangelog(markdown)[0]?.changes.features).toEqual([
+    { description: 'Add the initial workspace' },
+  ]);
 });
 
 test('rejects invalid release dates', () => {
