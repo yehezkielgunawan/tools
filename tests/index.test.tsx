@@ -46,6 +46,18 @@ test('renders the JSON tool for its direct route', async () => {
   ).toBeInTheDocument();
 });
 
+test('renders the changelog route', async () => {
+  render(
+    <MemoryRouter initialEntries={['/changelog']}>
+      <App />
+    </MemoryRouter>,
+  );
+
+  expect(
+    await screen.findByRole('heading', { name: /changelog/i }),
+  ).toBeInTheDocument();
+});
+
 test('renders the not found page for unknown routes', () => {
   render(
     <MemoryRouter initialEntries={['/unknown']}>
