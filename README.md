@@ -45,8 +45,30 @@ pnpm run preview
 - `/` - available tools
 - `/generator/whatsapp-link` - WhatsApp link generator
 - `/developer/json-formatter` - JSON formatter
+- `/changelog` - release history and notable changes
 
 Unknown routes show a 404 page. Tool modules are lazy-loaded so new tools do not need to be included in the initial route bundle.
+
+## Release Process
+
+The repository uses Semantic Versioning, Conventional Commits, and Release Please for one application version across all tools.
+
+Use a Conventional Commit-style pull request title so the release history can be generated automatically:
+
+```text
+feat(json): add tree view
+fix(whatsapp): encode emoji correctly
+perf(image): reduce memory usage
+feat(config)!: replace the legacy configuration
+```
+
+Use stable tool or product-area scopes such as `whatsapp`, `json`, `image`, `pwa`, `ui`, `seo`, `build`, or `release`. Pull requests are expected to use squash merge so the validated title becomes the release commit message.
+
+Release Please opens a release pull request after releasable commits reach `main`. Merging that pull request updates `package.json`, `CHANGELOG.md`, and the release manifest, then creates a `vX.Y.Z` tag and GitHub Release. Released changelog sections should not normally be edited manually.
+
+The `RELEASE_PLEASE_TOKEN` repository secret is a fine-grained token restricted to this repository with Actions read-only, Contents read/write, Issues read/write, and Pull requests read/write permissions. If it expires, replace the secret value; the workflow does not need to change.
+
+Production deployment remains manual through `workflow_dispatch` in `.github/workflows/deploy.yml`.
 
 ## Social Metadata
 
