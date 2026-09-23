@@ -142,6 +142,25 @@ test('allows Release Please reference-link definitions', () => {
   ]);
 });
 
+test('allows Markdown reference-link usages before the first release', () => {
+  const markdown = `# Changelog
+
+[npm history][1]
+
+## 1.0.0 (2026-09-23)
+
+### Features
+
+* Add the initial workspace
+
+[1]: https://github.com/example/tools/releases/tag/v1.0.0
+`;
+
+  expect(parseChangelog(markdown)[0]?.changes.features).toEqual([
+    { description: 'Add the initial workspace' },
+  ]);
+});
+
 test('rejects unexpected content before the first release', () => {
   expect(() =>
     parseChangelog('# Changelog\n\nThis is an unsupported preamble.\n'),

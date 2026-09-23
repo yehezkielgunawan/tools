@@ -8,6 +8,7 @@ const SCOPED_CHANGE_PATTERN = /^\*\*([^*]+):\*\*\s*(.+)$/;
 const RELEASE_LINK_PATTERN = /\s+\(\[[^\]]+\]\([^)]+\)\)$/;
 const MARKDOWN_LINK_PATTERN = /\[([^\]]+)\]\([^)]+\)/g;
 const REFERENCE_LINK_PATTERN = /^\[[^\]]+\]:\s+\S+$/;
+const REFERENCE_USAGE_PATTERN = /^\[[^\]]+\]\[[^\]]+\]$/;
 
 const SECTION_TYPES: Record<string, ChangeType> = {
   features: 'features',
@@ -143,7 +144,10 @@ export function parseChangelog(markdown: string): ChangelogRelease[] {
       continue;
     }
 
-    if (REFERENCE_LINK_PATTERN.test(line.trim())) {
+    if (
+      REFERENCE_LINK_PATTERN.test(line.trim()) ||
+      REFERENCE_USAGE_PATTERN.test(line.trim())
+    ) {
       continue;
     }
 
