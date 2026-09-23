@@ -125,6 +125,14 @@ test('rejects unexpected content inside a release', () => {
   ).toThrow(/unexpected content/i);
 });
 
+test('rejects reference-link usages inside a release', () => {
+  expect(() =>
+    parseChangelog(
+      '# Changelog\n\n## 1.0.0 (2026-09-23)\n\n### Features\n\n[unexpected prose][1]\n',
+    ),
+  ).toThrow(/unexpected content/i);
+});
+
 test('allows Release Please reference-link definitions', () => {
   const markdown = `# Changelog
 

@@ -146,7 +146,7 @@ export function parseChangelog(markdown: string): ChangelogRelease[] {
 
     if (
       REFERENCE_LINK_PATTERN.test(line.trim()) ||
-      REFERENCE_USAGE_PATTERN.test(line.trim())
+      (!currentRelease && REFERENCE_USAGE_PATTERN.test(line.trim()))
     ) {
       continue;
     }
