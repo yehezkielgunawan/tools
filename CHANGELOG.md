@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.0](https://github.com/yehezkielgunawan/tools/compare/v1.0.0...v1.1.0) (2026-09-23)
+
+
+### Features
+
+* add client-side toolbox MVP ([548f1a8](https://github.com/yehezkielgunawan/tools/commit/548f1a8cd1bfb2a2bf3f0483321578c6cf497e2d))
+* **build:** inject application release metadata ([855808f](https://github.com/yehezkielgunawan/tools/commit/855808fda75c9708152b39d68fd300e899bda356))
+* **release:** add changelog and versioning ([b534323](https://github.com/yehezkielgunawan/tools/commit/b5343236316d681661462e4bd4da646dfb49616a))
+* **ui:** add changelog page and navigation ([0b3f6ca](https://github.com/yehezkielgunawan/tools/commit/0b3f6ca3878f37433652b3f4d536f4004a8f4a69))
+
+
+### Bug Fixes
+
+* **changelog:** harden release parsing and tests ([cf73898](https://github.com/yehezkielgunawan/tools/commit/cf73898287220321bbb3449d9ffaac0b395d6b41))
+* **changelog:** reject empty release metadata ([6f6ade7](https://github.com/yehezkielgunawan/tools/commit/6f6ade75c28aacf7bb7c1a2356916c04e928da09))
+* **changelog:** reject release reference prose ([a3c124c](https://github.com/yehezkielgunawan/tools/commit/a3c124cc2830eeb18657218bacdf66a0069462a6))
+* **changelog:** support markdown reference usages ([fcc4a7f](https://github.com/yehezkielgunawan/tools/commit/fcc4a7fa619bea0da09a1ab4d268a7bc211683c8))
+* **seo:** route changelog metadata through Worker ([07d3e59](https://github.com/yehezkielgunawan/tools/commit/07d3e5940177ad57a7ffebf7f36a9ae6c60aaf3f))
+
 ## 1.0.0 (2026-09-23)
 
 ### Features
