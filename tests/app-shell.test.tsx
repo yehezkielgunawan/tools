@@ -3,6 +3,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { ThemeProvider } from '../src/app/ThemeProvider';
 import AppShell from '../src/components/layout/AppShell';
+import { APP_VERSION } from '../src/config/app';
 
 function renderShell(path = '/') {
   return render(
@@ -27,6 +28,11 @@ test('renders the branded sidebar and registry-driven tool navigation', () => {
     '/',
   );
   expect(screen.getByRole('link', { name: /all tools/i })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: /changelog/i })).toHaveAttribute(
+    'href',
+    '/changelog',
+  );
+  expect(screen.getByText(`v${APP_VERSION}`)).toBeInTheDocument();
   expect(
     screen.getByRole('heading', { name: /generator/i }),
   ).toBeInTheDocument();

@@ -71,6 +71,14 @@ export const homePageMetadata = createPageMetadata({
   cta: 'Explore tools \u2192',
 });
 
+export const changelogPageMetadata = createPageMetadata({
+  browserTitle: 'Changelog | Yehezgun Tools',
+  imageTitle: 'Yehezgun Tools Changelog',
+  description: 'Release history and notable changes for Yehezgun Tools.',
+  path: '/changelog',
+  cta: 'Read release notes \u2192',
+});
+
 function normalizePathname(pathname: string): string {
   const path = pathname.split('?')[0] ?? '/';
   if (path === '/') {
@@ -85,6 +93,10 @@ export function getPageMetadata(pathname: string): PageMetadata | null {
 
   if (normalizedPathname === '/') {
     return homePageMetadata;
+  }
+
+  if (normalizedPathname === '/changelog') {
+    return changelogPageMetadata;
   }
 
   const tool = tools.find(({ path }) => path === normalizedPathname);

@@ -34,6 +34,15 @@ test('normalizes trailing slashes for registered tools', () => {
   );
 });
 
+test('resolves metadata for the changelog page', () => {
+  expect(getPageMetadata('/changelog/')).toMatchObject({
+    browserTitle: 'Changelog | Yehezgun Tools',
+    imageTitle: 'Yehezgun Tools Changelog',
+    description: 'Release history and notable changes for Yehezgun Tools.',
+    canonicalUrl: 'https://tools.yehezgun.com/changelog',
+  });
+});
+
 test('returns no metadata for unknown routes', () => {
   expect(getPageMetadata('/not-a-tool')).toBeNull();
 });

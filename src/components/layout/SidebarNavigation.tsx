@@ -1,5 +1,6 @@
-import { Braces, Grid2X2, MessageCircle } from 'lucide-react';
+import { Braces, Grid2X2, History, MessageCircle } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
+import { APP_VERSION } from '../../config/app';
 import { toolCategories, tools } from '../../tools/registry';
 import ThemeToggle from './ThemeToggle';
 
@@ -50,6 +51,19 @@ export default function SidebarNavigation({
             >
               <Grid2X2 aria-hidden="true" size={17} strokeWidth={1.8} />
               All tools
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              className={({ isActive }) =>
+                isActive ? 'active font-semibold' : undefined
+              }
+              end
+              onClick={onNavigate}
+              to="/changelog"
+            >
+              <History aria-hidden="true" size={17} strokeWidth={1.8} />
+              Changelog
             </NavLink>
           </li>
         </ul>
@@ -106,6 +120,7 @@ export default function SidebarNavigation({
         <p className="mt-4 px-3 text-xs leading-5 text-base-content/60">
           A personal workspace for the tools I reach for most.
         </p>
+        <p className="mt-2 px-3 text-xs text-base-content/45">v{APP_VERSION}</p>
       </div>
     </aside>
   );
