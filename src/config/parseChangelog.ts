@@ -147,6 +147,13 @@ export function parseChangelog(markdown: string): ChangelogRelease[] {
       continue;
     }
 
+    if (!currentRelease && line.trim()) {
+      throw invalidLine(
+        lineNumber,
+        'unexpected content before the first release.',
+      );
+    }
+
     if (currentRelease && line.trim()) {
       throw invalidLine(lineNumber, 'unexpected content inside a release.');
     }
@@ -154,6 +161,15 @@ export function parseChangelog(markdown: string): ChangelogRelease[] {
 
   if (releases.length === 0) {
     throw new Error('Invalid changelog: no releases found.');
+  }
+
+  const emptyRelease = releases.find((release) =>
+    Object.values(release.changes).every((items) => !items?.length),
+  );
+  if (emptyRelease) {
+    throw new Error(
+      `Invalid changelog: release ${emptyRelease.version} has no changes.`,
+    );
   }
 
   return releases.sort((left, right) => right.date.localeCompare(left.date));

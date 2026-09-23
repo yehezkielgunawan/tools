@@ -142,6 +142,18 @@ test('allows Release Please reference-link definitions', () => {
   ]);
 });
 
+test('rejects unexpected content before the first release', () => {
+  expect(() =>
+    parseChangelog('# Changelog\n\nThis is an unsupported preamble.\n'),
+  ).toThrow(/before the first release/i);
+});
+
+test('rejects releases without changes', () => {
+  expect(() =>
+    parseChangelog('# Changelog\n\n## 1.0.0 (2026-09-23)\n'),
+  ).toThrow(/release 1.0.0 has no changes/i);
+});
+
 test('rejects invalid release dates', () => {
   expect(() => parseChangelog('# Changelog\n\n## 1.0.0 (2026-9-23)\n')).toThrow(
     /invalid release heading/i,
