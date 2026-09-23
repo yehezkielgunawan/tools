@@ -1,11 +1,32 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginTailwindcss } from '@rsbuild/plugin-tailwindcss';
 import { pluginPWA } from 'rsbuild-plugin-pwa';
+import {
+  parseChangelog,
+  validateCurrentRelease,
+} from './src/config/parseChangelog';
 import { homePageMetadata } from './src/seo/pageMetadata';
+
+const packageJson = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
+) as { version: string };
+
+const changelog = parseChangelog(
+  readFileSync(new URL('./CHANGELOG.md', import.meta.url), 'utf8'),
+);
+
+validateCurrentRelease(packageJson.version, changelog);
 
 // Docs: https://rsbuild.rs/config/
 export default defineConfig({
+  source: {
+    define: {
+      __APP_VERSION__: JSON.stringify(packageJson.version),
+      __CHANGELOG__: JSON.stringify(changelog),
+    },
+  },
   html: {
     favicon: './public/yehezgun-tools-favicon.svg',
     title: homePageMetadata.browserTitle,

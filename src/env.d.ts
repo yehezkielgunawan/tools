@@ -1,5 +1,7 @@
 /// <reference types="rsbuild-plugin-pwa/types/react" />
 
+import type { ChangelogRelease } from './config/changelog';
+
 /**
  * Imports the SVG file as a React component.
  * @requires [@rsbuild/plugin-svgr](https://npmjs.com/package/@rsbuild/plugin-svgr)
@@ -9,4 +11,9 @@ declare module '*.svg?react' {
 
   const ReactComponent: FunctionComponent<SVGProps<SVGSVGElement>>;
   export default ReactComponent;
+}
+
+declare global {
+  const __APP_VERSION__: string;
+  const __CHANGELOG__: readonly ChangelogRelease[];
 }
