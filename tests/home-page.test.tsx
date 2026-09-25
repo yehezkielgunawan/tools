@@ -30,6 +30,8 @@ test('renders all registered tools in one grid with their category labels', () =
     { label: 'Image' },
     { label: 'PDF' },
   ]) {
-    expect(screen.queryByRole('heading', { name: label })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('heading', { name: label }),
+    ).not.toBeInTheDocument();
   }
 });
