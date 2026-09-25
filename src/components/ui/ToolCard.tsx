@@ -4,6 +4,7 @@ import {
   FileText,
   Image as ImageIcon,
   MessageCircle,
+  QrCode,
 } from 'lucide-react';
 import { Link } from 'react-router';
 import type { ToolDefinition } from '../../tools/registry';
@@ -13,6 +14,7 @@ const icons = {
   image: ImageIcon,
   'file-text': FileText,
   'message-circle': MessageCircle,
+  'qr-code': QrCode,
 } as const;
 
 interface ToolCardProps {

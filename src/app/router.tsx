@@ -5,6 +5,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 
 const ChangelogPage = lazy(() => import('../pages/ChangelogPage'));
 const WhatsAppLinkGenerator = lazy(() => import('../tools/whatsapp-link'));
+const QrCodeGenerator = lazy(() => import('../tools/qr-code'));
 const JsonFormatter = lazy(() => import('../tools/json-formatter'));
 const ImageCompressor = lazy(() => import('../tools/image-compressor'));
 const PdfEditor = lazy(() => import('../tools/pdf-editor'));
@@ -30,6 +31,7 @@ export function AppRoutes() {
           element={<WhatsAppLinkGenerator />}
           path="/generator/whatsapp-link"
         />
+        <Route element={<QrCodeGenerator />} path="/generator/qr-code" />
         <Route element={<JsonFormatter />} path="/developer/json-formatter" />
         <Route element={<ImageCompressor />} path="/image/image-compressor" />
         <Route element={<PdfEditor />} path="/pdf/pdf-editor" />

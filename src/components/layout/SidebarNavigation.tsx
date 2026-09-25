@@ -5,6 +5,7 @@ import {
   History,
   Image as ImageIcon,
   MessageCircle,
+  QrCode,
 } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 import { APP_VERSION } from '../../config/app';
@@ -21,6 +22,7 @@ const icons = {
   image: ImageIcon,
   'file-text': FileText,
   'message-circle': MessageCircle,
+  'qr-code': QrCode,
 } as const;
 
 export default function SidebarNavigation({

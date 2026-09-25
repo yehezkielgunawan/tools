@@ -1,5 +1,10 @@
 export type ToolCategory = 'generator' | 'developer' | 'image' | 'pdf';
-export type ToolIconName = 'message-circle' | 'braces' | 'image' | 'file-text';
+export type ToolIconName =
+  | 'message-circle'
+  | 'qr-code'
+  | 'braces'
+  | 'image'
+  | 'file-text';
 
 export interface ToolDefinition {
   id: string;
@@ -30,6 +35,15 @@ export const tools = [
     category: 'generator',
     keywords: ['whatsapp', 'wa', 'message', 'link'],
     icon: 'message-circle',
+  },
+  {
+    id: 'qr-code',
+    name: 'QR Code Generator',
+    description: 'Create a scannable QR code for a URL or contact card.',
+    path: '/generator/qr-code',
+    category: 'generator',
+    keywords: ['qr', 'qrcode', 'url', 'vcard', 'contact'],
+    icon: 'qr-code',
   },
   {
     id: 'json-formatter',
