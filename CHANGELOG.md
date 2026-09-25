@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.0](https://github.com/yehezkielgunawan/tools/compare/v1.3.1...v1.4.0) (2026-09-25)
+
+
+### Features
+
+* QR Code Generator ([723f2de](https://github.com/yehezkielgunawan/tools/commit/723f2decf7b461a4cbe361337d6b503f8625e8f2))
+* **qr:** add live QR generator and PNG download ([5d70a36](https://github.com/yehezkielgunawan/tools/commit/5d70a360f1cb327d2f9a209f37750f74aab5baf0))
+* **qr:** add URL and vCard payload generation ([90e77f6](https://github.com/yehezkielgunawan/tools/commit/90e77f67b6e0e9c1e83ce7a635f83484ed4ab552))
+
 ## [1.3.1](https://github.com/yehezkielgunawan/tools/compare/v1.3.0...v1.3.1) (2026-09-25)
 
 
