@@ -1,6 +1,7 @@
 import {
   ArrowUpRight,
   Braces,
+  FileText,
   Image as ImageIcon,
   MessageCircle,
 } from 'lucide-react';
@@ -10,6 +11,7 @@ import type { ToolDefinition } from '../../tools/registry';
 const icons = {
   braces: Braces,
   image: ImageIcon,
+  'file-text': FileText,
   'message-circle': MessageCircle,
 } as const;
 

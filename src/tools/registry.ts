@@ -1,5 +1,5 @@
-export type ToolCategory = 'generator' | 'developer' | 'image';
-export type ToolIconName = 'message-circle' | 'braces' | 'image';
+export type ToolCategory = 'generator' | 'developer' | 'image' | 'pdf';
+export type ToolIconName = 'message-circle' | 'braces' | 'image' | 'file-text';
 
 export interface ToolDefinition {
   id: string;
@@ -15,6 +15,7 @@ export const toolCategories = [
   { id: 'generator', label: 'Generator' },
   { id: 'developer', label: 'Developer' },
   { id: 'image', label: 'Image' },
+  { id: 'pdf', label: 'PDF' },
 ] as const satisfies readonly {
   id: ToolCategory;
   label: string;
@@ -48,5 +49,14 @@ export const tools = [
     category: 'image',
     keywords: ['image', 'compressor', 'jpeg', 'png', 'wasm', 'canvas'],
     icon: 'image',
+  },
+  {
+    id: 'pdf-editor',
+    name: 'PDF Editor',
+    description: 'Add text, draw, and sign PDFs locally in your browser.',
+    path: '/pdf/pdf-editor',
+    category: 'pdf',
+    keywords: ['pdf', 'editor', 'signature', 'sign', 'draw', 'text'],
+    icon: 'file-text',
   },
 ] as const satisfies readonly ToolDefinition[];
