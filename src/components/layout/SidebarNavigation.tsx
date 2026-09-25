@@ -6,6 +6,7 @@ import {
   Image as ImageIcon,
   MessageCircle,
   QrCode,
+  Stamp,
 } from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 import { APP_VERSION } from '../../config/app';
@@ -23,6 +24,7 @@ const icons = {
   'file-text': FileText,
   'message-circle': MessageCircle,
   'qr-code': QrCode,
+  stamp: Stamp,
 } as const;
 
 export default function SidebarNavigation({
@@ -132,6 +134,14 @@ export default function SidebarNavigation({
           A personal workspace for the tools I reach for most.
         </p>
         <p className="mt-2 px-3 text-xs text-base-content/45">v{APP_VERSION}</p>
+        <a
+          className="link link-hover mt-4 inline-block px-3 text-xs text-base-content/55"
+          href="https://yehezgun.com"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Made by Yehezkiel Gunawan
+        </a>
       </div>
     </aside>
   );

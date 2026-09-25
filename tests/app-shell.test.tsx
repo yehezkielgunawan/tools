@@ -51,6 +51,20 @@ test('renders the branded sidebar and registry-driven tool navigation', () => {
   ).toBeInTheDocument();
 });
 
+test('shows the author attribution at the bottom of the sidebar and opens it in a new tab', () => {
+  renderShell();
+
+  const sidebar = screen.getByRole('complementary', {
+    name: /tool navigation/i,
+  });
+  const attribution = within(sidebar).getByRole('link', {
+    name: 'Made by Yehezkiel Gunawan',
+  });
+  expect(attribution).toHaveAttribute('href', 'https://yehezgun.com');
+  expect(attribution).toHaveAttribute('target', '_blank');
+  expect(attribution).toHaveAttribute('rel', 'noopener noreferrer');
+});
+
 test('marks the current route and closes the mobile drawer after navigation', () => {
   renderShell('/developer/json-formatter');
 
@@ -83,19 +97,19 @@ test('keeps keyboard focus inside the open drawer', () => {
     name: /tool navigation/i,
   });
   const firstLink = within(drawer).getAllByRole('link')[0];
-  const lastControl = within(drawer).getByRole('button', {
-    name: /switch to dark mode/i,
+  const lastFocusable = within(drawer).getByRole('link', {
+    name: 'Made by Yehezkiel Gunawan',
   });
 
   expect(screen.getByRole('main').parentElement).toHaveAttribute('inert');
 
-  lastControl.focus();
+  lastFocusable.focus();
   fireEvent.keyDown(document, { key: 'Tab' });
   expect(firstLink).toHaveFocus();
 
   firstLink.focus();
   fireEvent.keyDown(document, { key: 'Tab', shiftKey: true });
-  expect(lastControl).toHaveFocus();
+  expect(lastFocusable).toHaveFocus();
 });
 
 test('closes an open drawer when the viewport grows to desktop width', () => {
