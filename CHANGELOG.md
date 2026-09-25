@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/yehezkielgunawan/tools/compare/v1.2.0...v1.3.0) (2026-09-25)
+
+
+### Features
+
+* Local PDF Editor ([0074831](https://github.com/yehezkielgunawan/tools/commit/007483144dce96f52a5cfe57c0903073bb6efb71))
+* **pdf:** add local PDF editor ([772b647](https://github.com/yehezkielgunawan/tools/commit/772b6476a2040d0d6aa2cfa870221bf41397a2c5))
+
+
+### Bug Fixes
+
+* **pdf:** preserve drawn signature strokes ([91ed6fd](https://github.com/yehezkielgunawan/tools/commit/91ed6fd160c9e12542da08987e2f094a1e54d904))
+
 ## [1.2.0](https://github.com/yehezkielgunawan/tools/compare/v1.1.0...v1.2.0) (2026-09-25)
 
 
