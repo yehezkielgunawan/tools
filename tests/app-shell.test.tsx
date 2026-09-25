@@ -51,6 +51,17 @@ test('renders the branded sidebar and registry-driven tool navigation', () => {
   ).toBeInTheDocument();
 });
 
+test('shows the author attribution in the site footer and opens it in a new tab', () => {
+  renderShell();
+
+  const attribution = screen.getByRole('link', {
+    name: 'Made by Yehezkiel Gunawan',
+  });
+  expect(attribution).toHaveAttribute('href', 'https://yehezgun.com');
+  expect(attribution).toHaveAttribute('target', '_blank');
+  expect(attribution).toHaveAttribute('rel', 'noopener noreferrer');
+});
+
 test('marks the current route and closes the mobile drawer after navigation', () => {
   renderShell('/developer/json-formatter');
 

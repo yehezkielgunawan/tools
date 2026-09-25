@@ -151,6 +151,16 @@ export default function AppShell({ children }: AppShellProps) {
         </header>
 
         <main className="min-w-0 flex-1">{children}</main>
+        <footer className="footer footer-center border-t border-base-300 bg-base-100 px-4 py-4 text-sm text-base-content/60">
+          <a
+            className="link link-hover"
+            href="https://yehezgun.com"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Made by Yehezkiel Gunawan
+          </a>
+        </footer>
       </div>
 
       <div className="drawer-side z-40" ref={drawerRef}>
