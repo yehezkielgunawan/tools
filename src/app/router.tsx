@@ -8,6 +8,7 @@ const WhatsAppLinkGenerator = lazy(() => import('../tools/whatsapp-link'));
 const QrCodeGenerator = lazy(() => import('../tools/qr-code'));
 const JsonFormatter = lazy(() => import('../tools/json-formatter'));
 const ImageCompressor = lazy(() => import('../tools/image-compressor'));
+const ImageWatermark = lazy(() => import('../tools/image-watermark'));
 const PdfEditor = lazy(() => import('../tools/pdf-editor'));
 
 function ToolLoading() {
@@ -34,6 +35,7 @@ export function AppRoutes() {
         <Route element={<QrCodeGenerator />} path="/generator/qr-code" />
         <Route element={<JsonFormatter />} path="/developer/json-formatter" />
         <Route element={<ImageCompressor />} path="/image/image-compressor" />
+        <Route element={<ImageWatermark />} path="/image/image-watermark" />
         <Route element={<PdfEditor />} path="/pdf/pdf-editor" />
         <Route element={<ChangelogPage />} path="/changelog" />
         <Route element={<NotFoundPage />} path="*" />

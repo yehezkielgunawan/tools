@@ -4,6 +4,7 @@ export type ToolIconName =
   | 'qr-code'
   | 'braces'
   | 'image'
+  | 'stamp'
   | 'file-text';
 
 export interface ToolDefinition {
@@ -63,6 +64,16 @@ export const tools = [
     category: 'image',
     keywords: ['image', 'compressor', 'jpeg', 'png', 'wasm', 'canvas'],
     icon: 'image',
+  },
+  {
+    id: 'image-watermark',
+    name: 'Image Watermark',
+    description:
+      'Add a draggable text watermark to a photo and save it locally.',
+    path: '/image/image-watermark',
+    category: 'image',
+    keywords: ['image', 'watermark', 'text', 'photo', 'heic', 'heif'],
+    icon: 'stamp',
   },
   {
     id: 'pdf-editor',
