@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.5.0](https://github.com/yehezkielgunawan/tools/compare/v1.4.0...v1.5.0) (2026-09-25)
+
+
+### Features
+
+* Image Watermark ([f09872f](https://github.com/yehezkielgunawan/tools/commit/f09872ff32a7f8312bd0027a94b5c1cfca419636))
+* **image:** add local image watermark tool ([3fb16da](https://github.com/yehezkielgunawan/tools/commit/3fb16da1f19c34753ee6773c468391405afa275e))
+* **image:** add watermark rotation control ([88009b6](https://github.com/yehezkielgunawan/tools/commit/88009b6c1112074dea6d9d2f04206f3cdb98604f))
+* **layout:** add author attribution footer ([0493dd0](https://github.com/yehezkielgunawan/tools/commit/0493dd060765f8b7d03052621794798547e66db8))
+
+
+### Refactors
+
+* **layout:** move author attribution to sidebar ([d4dd5e0](https://github.com/yehezkielgunawan/tools/commit/d4dd5e0190490321a5e2ebcb22bce2c9e84d67ec))
+
 ## [1.4.0](https://github.com/yehezkielgunawan/tools/compare/v1.3.1...v1.4.0) (2026-09-25)
 
 
