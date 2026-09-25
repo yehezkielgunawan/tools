@@ -28,7 +28,7 @@ test('renders the current release and categorized changes', () => {
   ).toBeInTheDocument();
 });
 
-test('renders release dates and scopes for changelog items', () => {
+test('renders release dates and all scopes for changelog items', () => {
   render(<ChangelogPage />);
 
   const releaseWithScopedItem = CHANGELOG.find((release) =>
@@ -36,12 +36,19 @@ test('renders release dates and scopes for changelog items', () => {
       items?.some((item) => item.scope),
     ),
   );
-  const scopedItem = Object.values(releaseWithScopedItem?.changes ?? {})
+  const scopedItems = Object.values(releaseWithScopedItem?.changes ?? {})
     .flat()
-    .find((item) => item.scope);
+    .filter((item) => item.scope);
   const release = screen.getByRole('article', {
     name: `v${releaseWithScopedItem?.version}`,
   });
+  const scopeCounts = new Map<string, number>();
+
+  for (const { scope } of scopedItems) {
+    if (scope) {
+      scopeCounts.set(scope, (scopeCounts.get(scope) ?? 0) + 1);
+    }
+  }
 
   expect(
     within(release).getByText(
@@ -51,7 +58,7 @@ test('renders release dates and scopes for changelog items', () => {
       }).format(new Date(`${releaseWithScopedItem?.date}T00:00:00Z`)),
     ),
   ).toBeInTheDocument();
-  expect(
-    within(release).getByText(scopedItem?.scope ?? 'Missing scope'),
-  ).toBeInTheDocument();
+  for (const [scope, count] of scopeCounts) {
+    expect(within(release).getAllByText(scope)).toHaveLength(count);
+  }
 });

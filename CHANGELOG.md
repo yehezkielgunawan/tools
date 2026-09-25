@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/yehezkielgunawan/tools/compare/v1.1.0...v1.2.0) (2026-09-25)
+
+
+### Features
+
+* Image Compressor Feature ([ebc3c3d](https://github.com/yehezkielgunawan/tools/commit/ebc3c3dcb9e7f7228f8525dd791c1997920c7435))
+* **image-compressor:** add compressor tool UI ([1a66cc0](https://github.com/yehezkielgunawan/tools/commit/1a66cc05812359d65caa4e47f005b1f87b26b882))
+* **image-compressor:** add local compression engines ([be830e1](https://github.com/yehezkielgunawan/tools/commit/be830e161e56d878d7193e53ee8de3e69168aa00))
+
 ## [1.1.0](https://github.com/yehezkielgunawan/tools/compare/v1.0.0...v1.1.0) (2026-09-23)
 
 
