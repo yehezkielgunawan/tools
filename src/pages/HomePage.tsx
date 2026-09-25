@@ -1,5 +1,5 @@
 import ToolCard from '../components/ui/ToolCard';
-import { toolCategories, tools } from '../tools/registry';
+import { tools } from '../tools/registry';
 
 export default function HomePage() {
   return (
@@ -17,31 +17,10 @@ export default function HomePage() {
         </p>
       </div>
 
-      <div className="mt-16 space-y-12">
-        {toolCategories.map((category) => {
-          const categoryTools = tools.filter(
-            (tool) => tool.category === category.id,
-          );
-
-          return (
-            <section aria-labelledby={`${category.id}-tools`} key={category.id}>
-              <div className="mb-4 flex items-center gap-3">
-                <h2
-                  className="text-sm font-semibold uppercase tracking-[0.18em] text-base-content/50"
-                  id={`${category.id}-tools`}
-                >
-                  {category.label}
-                </h2>
-                <div className="h-px flex-1 bg-base-300" />
-              </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                {categoryTools.map((tool) => (
-                  <ToolCard key={tool.id} tool={tool} />
-                ))}
-              </div>
-            </section>
-          );
-        })}
+      <div className="mt-16 grid gap-4 md:grid-cols-2">
+        {tools.map((tool) => (
+          <ToolCard key={tool.id} tool={tool} />
+        ))}
       </div>
     </section>
   );
