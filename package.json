@@ -12,6 +12,7 @@
     "generate:pwa-icons": "node scripts/generate-pwa-icons.mjs",
     "lint": "rslint",
     "preview": "rsbuild preview",
+    "migrate:biome": "biome migrate",
     "test": "rstest",
     "test:watch": "rstest --watch",
     "typecheck": "wrangler types && tsc --noEmit && tsc --noEmit -p tsconfig.worker.json"
