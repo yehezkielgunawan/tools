@@ -134,6 +134,14 @@ export default function SidebarNavigation({
           A personal workspace for the tools I reach for most.
         </p>
         <p className="mt-2 px-3 text-xs text-base-content/45">v{APP_VERSION}</p>
+        <a
+          className="link link-hover mt-4 inline-block px-3 text-xs text-base-content/55"
+          href="https://yehezgun.com"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          Made by Yehezkiel Gunawan
+        </a>
       </div>
     </aside>
   );
