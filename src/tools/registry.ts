@@ -1,5 +1,5 @@
-export type ToolCategory = 'generator' | 'developer';
-export type ToolIconName = 'message-circle' | 'braces';
+export type ToolCategory = 'generator' | 'developer' | 'image';
+export type ToolIconName = 'message-circle' | 'braces' | 'image';
 
 export interface ToolDefinition {
   id: string;
@@ -14,6 +14,7 @@ export interface ToolDefinition {
 export const toolCategories = [
   { id: 'generator', label: 'Generator' },
   { id: 'developer', label: 'Developer' },
+  { id: 'image', label: 'Image' },
 ] as const satisfies readonly {
   id: ToolCategory;
   label: string;
@@ -37,5 +38,15 @@ export const tools = [
     category: 'developer',
     keywords: ['json', 'formatter', 'validator', 'developer'],
     icon: 'braces',
+  },
+  {
+    id: 'image-compressor',
+    name: 'Image Compressor',
+    description:
+      'Compress JPEG and PNG images in your browser with Canvas or pixo-wasm.',
+    path: '/image/image-compressor',
+    category: 'image',
+    keywords: ['image', 'compressor', 'jpeg', 'png', 'wasm', 'canvas'],
+    icon: 'image',
   },
 ] as const satisfies readonly ToolDefinition[];

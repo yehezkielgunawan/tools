@@ -1,4 +1,10 @@
-import { Braces, Grid2X2, History, MessageCircle } from 'lucide-react';
+import {
+  Braces,
+  Grid2X2,
+  History,
+  Image as ImageIcon,
+  MessageCircle,
+} from 'lucide-react';
 import { Link, NavLink } from 'react-router';
 import { APP_VERSION } from '../../config/app';
 import { toolCategories, tools } from '../../tools/registry';
@@ -11,6 +17,7 @@ interface SidebarNavigationProps {
 
 const icons = {
   braces: Braces,
+  image: ImageIcon,
   'message-circle': MessageCircle,
 } as const;
 

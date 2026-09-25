@@ -6,6 +6,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 const ChangelogPage = lazy(() => import('../pages/ChangelogPage'));
 const WhatsAppLinkGenerator = lazy(() => import('../tools/whatsapp-link'));
 const JsonFormatter = lazy(() => import('../tools/json-formatter'));
+const ImageCompressor = lazy(() => import('../tools/image-compressor'));
 
 function ToolLoading() {
   return (
@@ -29,6 +30,7 @@ export function AppRoutes() {
           path="/generator/whatsapp-link"
         />
         <Route element={<JsonFormatter />} path="/developer/json-formatter" />
+        <Route element={<ImageCompressor />} path="/image/image-compressor" />
         <Route element={<ChangelogPage />} path="/changelog" />
         <Route element={<NotFoundPage />} path="*" />
       </Routes>

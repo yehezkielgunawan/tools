@@ -1,9 +1,15 @@
-import { ArrowUpRight, Braces, MessageCircle } from 'lucide-react';
+import {
+  ArrowUpRight,
+  Braces,
+  Image as ImageIcon,
+  MessageCircle,
+} from 'lucide-react';
 import { Link } from 'react-router';
 import type { ToolDefinition } from '../../tools/registry';
 
 const icons = {
   braces: Braces,
+  image: ImageIcon,
   'message-circle': MessageCircle,
 } as const;
 

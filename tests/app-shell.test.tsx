@@ -39,11 +39,15 @@ test('renders the branded sidebar and registry-driven tool navigation', () => {
   expect(
     screen.getByRole('heading', { name: /developer/i }),
   ).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /^image$/i })).toBeInTheDocument();
   expect(
     screen.getByRole('link', { name: /whatsapp link generator/i }),
   ).toBeInTheDocument();
   expect(
     screen.getByRole('link', { name: /json formatter/i }),
+  ).toBeInTheDocument();
+  expect(
+    screen.getByRole('link', { name: /image compressor/i }),
   ).toBeInTheDocument();
 });
 
