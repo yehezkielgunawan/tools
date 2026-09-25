@@ -28,6 +28,16 @@ test('resolves metadata for the registered WhatsApp tool', () => {
   });
 });
 
+test('resolves metadata for the image compressor tool', () => {
+  expect(getPageMetadata('/image/image-compressor')).toMatchObject({
+    browserTitle: 'Image Compressor | Yehezgun Tools',
+    imageTitle: 'Image Compressor',
+    description:
+      'Compress JPEG and PNG images in your browser with Canvas or pixo-wasm.',
+    canonicalUrl: 'https://tools.yehezgun.com/image/image-compressor',
+  });
+});
+
 test('normalizes trailing slashes for registered tools', () => {
   expect(getPageMetadata('/developer/json-formatter/')).toEqual(
     getPageMetadata('/developer/json-formatter'),

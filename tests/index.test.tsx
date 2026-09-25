@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import App from '../src/app/App';
 
-test('renders the homepage with both registered tools', () => {
+test('renders the homepage with all registered tools', () => {
   render(
     <MemoryRouter initialEntries={['/']}>
       <App />
@@ -19,6 +19,9 @@ test('renders the homepage with both registered tools', () => {
   ).toBeInTheDocument();
   expect(
     main.getByRole('link', { name: /json formatter/i }),
+  ).toBeInTheDocument();
+  expect(
+    main.getByRole('link', { name: /image compressor/i }),
   ).toBeInTheDocument();
 });
 
@@ -43,6 +46,18 @@ test('renders the JSON tool for its direct route', async () => {
 
   expect(
     await screen.findByRole('heading', { name: /json formatter/i }),
+  ).toBeInTheDocument();
+});
+
+test('renders the image compressor for its direct route', async () => {
+  render(
+    <MemoryRouter initialEntries={['/image/image-compressor']}>
+      <App />
+    </MemoryRouter>,
+  );
+
+  expect(
+    await screen.findByRole('heading', { name: /image compressor/i }),
   ).toBeInTheDocument();
 });
 

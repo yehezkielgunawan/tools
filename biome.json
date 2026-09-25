@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    "includes": ["**", "!src/tools/image-compressor/vendor"]
+  },
   "assist": {
     "actions": {
       "source": {
