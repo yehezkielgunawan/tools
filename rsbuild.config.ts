@@ -1,4 +1,6 @@
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { dirname, resolve } from 'node:path';
 import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginTailwindcss } from '@rsbuild/plugin-tailwindcss';
@@ -16,6 +18,8 @@ const packageJson = JSON.parse(
 const changelog = parseChangelog(
   readFileSync(new URL('./CHANGELOG.md', import.meta.url), 'utf8'),
 );
+const require = createRequire(import.meta.url);
+const pdfjsDistDirectory = dirname(require.resolve('pdfjs-dist/package.json'));
 
 validateCurrentRelease(packageJson.version, changelog);
 
@@ -26,6 +30,27 @@ export default defineConfig({
       __APP_VERSION__: JSON.stringify(packageJson.version),
       __CHANGELOG__: JSON.stringify(changelog),
     },
+  },
+  output: {
+    copy: [
+      {
+        from: resolve(pdfjsDistDirectory, 'cmaps'),
+        to: 'static/pdfjs/cmaps',
+      },
+      {
+        from: resolve(pdfjsDistDirectory, 'iccs'),
+        to: 'static/pdfjs/iccs',
+      },
+      {
+        from: resolve(pdfjsDistDirectory, 'standard_fonts'),
+        to: 'static/pdfjs/standard_fonts',
+      },
+      {
+        from: resolve(pdfjsDistDirectory, 'wasm'),
+        to: 'static/pdfjs/wasm',
+        globOptions: { ignore: ['**/*.wasm'] },
+      },
+    ],
   },
   html: {
     favicon: './public/yehezgun-tools-favicon.svg',
@@ -132,6 +157,9 @@ export default defineConfig({
         workboxOptions: {
           cleanupOutdatedCaches: true,
           clientsClaim: true,
+          globPatterns: [
+            '**/*.{js,css,html,ico,png,svg,webp,avif,jpg,jpeg,woff,woff2,json,webmanifest,bcmap,pfb,ttf,icc}',
+          ],
           navigateFallback: '/index.html',
           skipWaiting: false,
           globIgnores: ['**/*.wasm'],

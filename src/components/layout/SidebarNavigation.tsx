@@ -1,5 +1,6 @@
 import {
   Braces,
+  FileText,
   Grid2X2,
   History,
   Image as ImageIcon,
@@ -18,6 +19,7 @@ interface SidebarNavigationProps {
 const icons = {
   braces: Braces,
   image: ImageIcon,
+  'file-text': FileText,
   'message-circle': MessageCircle,
 } as const;
 
