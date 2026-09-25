@@ -80,8 +80,9 @@ export default function SignaturePad({
   };
 
   const finishStroke = (event: ReactPointerEvent<HTMLCanvasElement>) => {
-    if (activeStrokeRef.current.length > 1) {
-      setStrokes((current) => [...current, activeStrokeRef.current]);
+    const completedStroke = activeStrokeRef.current;
+    if (completedStroke.length > 1) {
+      setStrokes((current) => [...current, completedStroke]);
     }
     activeStrokeRef.current = [];
     setActiveStroke([]);
