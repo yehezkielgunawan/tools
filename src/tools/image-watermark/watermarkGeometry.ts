@@ -36,6 +36,27 @@ function assertPositiveSize(size: ImageSize): void {
   }
 }
 
+export function getRotatedTextBounds(
+  textSize: TextSize,
+  rotationDegrees: number,
+): TextSize {
+  const width = Number.isFinite(textSize.width)
+    ? Math.max(0, textSize.width)
+    : 0;
+  const height = Number.isFinite(textSize.height)
+    ? Math.max(0, textSize.height)
+    : 0;
+  const rotation = Number.isFinite(rotationDegrees) ? rotationDegrees : 0;
+  const radians = (rotation * Math.PI) / 180;
+  const cosine = Math.abs(Math.cos(radians));
+  const sine = Math.abs(Math.sin(radians));
+
+  return {
+    width: Math.round((width * cosine + height * sine) * 1e10) / 1e10,
+    height: Math.round((width * sine + height * cosine) * 1e10) / 1e10,
+  };
+}
+
 export function clampWatermarkPosition(
   position: WatermarkPosition,
   imageSize: ImageSize,

@@ -109,6 +109,7 @@ export default function ImageWatermark() {
   const [fontScale, setFontScale] = useState(7);
   const [color, setColor] = useState('#ffffff');
   const [opacity, setOpacity] = useState(78);
+  const [rotation, setRotation] = useState(0);
   const [position, setPosition] = useState(INITIAL_POSITION);
   const [previewSize, setPreviewSize] = useState<PreviewSize>({
     width: 0,
@@ -352,6 +353,7 @@ export default function ImageWatermark() {
           fontScale: fontScale / 100,
           color,
           opacity: opacity / 100,
+          rotation,
         },
         selectedPhoto.image.mimeType,
       );
@@ -482,7 +484,7 @@ export default function ImageWatermark() {
                 <button
                   aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"
                   aria-label={`Move watermark: ${watermarkText.trim()}. Drag to move or use arrow keys.`}
-                  className="absolute z-10 max-w-[90%] -translate-x-1/2 -translate-y-1/2 touch-none cursor-move whitespace-nowrap rounded-md border border-dashed border-white/75 bg-black/35 px-2 py-1 text-center font-semibold leading-tight text-shadow-sm shadow-lg backdrop-blur-[2px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="absolute z-10 max-w-[90%] touch-none cursor-move whitespace-nowrap rounded-md border border-dashed border-white/75 bg-black/35 px-2 py-1 text-center font-semibold leading-tight text-shadow-sm shadow-lg backdrop-blur-[2px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   onKeyDown={handleWatermarkKeyDown}
                   onPointerCancel={handlePointerUp}
                   onPointerDown={handlePointerDown}
@@ -496,6 +498,7 @@ export default function ImageWatermark() {
                       left: `${position.x * 100}%`,
                       opacity: opacity / 100,
                       top: `${position.y * 100}%`,
+                      transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
                       textShadow: '0 1px 4px rgb(0 0 0 / 85%)',
                     } as CSSProperties
                   }
@@ -612,6 +615,41 @@ export default function ImageWatermark() {
                 type="range"
                 value={opacity}
               />
+            </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <div className="flex items-center justify-between gap-3">
+                <label
+                  className="text-sm font-medium"
+                  htmlFor="watermark-rotation"
+                >
+                  Rotation
+                </label>
+                <output
+                  className="text-sm tabular-nums text-base-content/65"
+                  htmlFor="watermark-rotation"
+                >
+                  {rotation}°
+                </output>
+              </div>
+              <input
+                className="range range-primary range-sm w-full"
+                disabled={operation === 'export'}
+                id="watermark-rotation"
+                max="180"
+                min="-180"
+                onChange={(event) => {
+                  setRotation(Number(event.currentTarget.value));
+                  clearArtifact();
+                }}
+                step="1"
+                type="range"
+                value={rotation}
+              />
+              <p className="text-xs text-base-content/55">
+                Rotate clockwise or counterclockwise. Zero keeps the text
+                horizontal.
+              </p>
             </div>
 
             <div className="space-y-2 sm:col-span-2">

@@ -13,6 +13,7 @@ import {
 } from '../image-compressor/prepareImage';
 import {
   clampWatermarkPosition,
+  getRotatedTextBounds,
   type WatermarkPosition,
 } from './watermarkGeometry';
 
@@ -43,6 +44,7 @@ export interface WatermarkRenderOptions {
   fontScale: number;
   color: string;
   opacity: number;
+  rotation: number;
 }
 
 interface HeifDimensions {
@@ -506,10 +508,12 @@ export function renderWatermark(
     { width, height },
     options.fontScale,
   );
+  const rotation = Number.isFinite(options.rotation) ? options.rotation : 0;
+  const rotatedTextSize = getRotatedTextBounds(textSize, rotation);
   const position = clampWatermarkPosition(
     options.position,
     { width, height },
-    textSize,
+    rotatedTextSize,
   );
   const x = position.x * width;
   const y = position.y * height;
@@ -517,6 +521,8 @@ export function renderWatermark(
 
   context.save();
   context.globalAlpha = alpha;
+  context.translate(x, y);
+  context.rotate((rotation * Math.PI) / 180);
   context.lineWidth = Math.max(1, Math.round(Math.min(width, height) * 0.0015));
   context.strokeStyle =
     options.color.toLowerCase() === '#ffffff'
@@ -526,8 +532,8 @@ export function renderWatermark(
   context.shadowBlur = Math.min(width, height) * 0.003;
   context.shadowOffsetY = Math.min(width, height) * 0.0015;
   context.fillStyle = options.color;
-  context.strokeText(options.text, x, y, width * 0.9);
-  context.fillText(options.text, x, y, width * 0.9);
+  context.strokeText(options.text, 0, 0, width * 0.9);
+  context.fillText(options.text, 0, 0, width * 0.9);
   context.restore();
 
   return position;

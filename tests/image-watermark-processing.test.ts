@@ -181,6 +181,8 @@ test('encodes the composited image in the selected output format and releases it
     actualBoundingBoxAscent: 12,
     actualBoundingBoxDescent: 4,
   }));
+  const rotate = rs.fn();
+  const translate = rs.fn();
   let encodedType = '';
   const outputCanvas = {
     width: 0,
@@ -190,9 +192,11 @@ test('encodes the composited image in the selected output format and releases it
       drawImage,
       fillText: rs.fn(),
       measureText,
+      rotate,
       restore: rs.fn(),
       save: rs.fn(),
       strokeText: rs.fn(),
+      translate,
     }),
     toBlob: (callback: BlobCallback, type?: string) => {
       encodedType = type ?? '';
@@ -208,6 +212,7 @@ test('encodes the composited image in the selected output format and releases it
       fontScale: 0.06,
       color: '#ffffff',
       opacity: 0.8,
+      rotation: 45,
     },
     'image/jpeg',
     () => outputCanvas,
@@ -216,5 +221,7 @@ test('encodes the composited image in the selected output format and releases it
   expect(blob.type).toBe('image/jpeg');
   expect(encodedType).toBe('image/jpeg');
   expect(drawImage).toHaveBeenCalledWith(source, 0, 0, 640, 480);
+  expect(translate).toHaveBeenCalledWith(320, 240);
+  expect(rotate).toHaveBeenCalledWith(Math.PI / 4);
   expect(outputCanvas).toMatchObject({ width: 0, height: 0 });
 });

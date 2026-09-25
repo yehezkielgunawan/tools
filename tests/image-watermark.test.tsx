@@ -51,9 +51,24 @@ test('shows mobile-friendly watermark controls and accepts HEIC and HEIF photos'
   expect(screen.getByLabelText(/text size/i)).toBeInTheDocument();
   expect(screen.getByLabelText(/text color/i)).toBeInTheDocument();
   expect(screen.getByLabelText(/opacity/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/rotation/i)).toHaveValue('0');
   expect(
     screen.getByRole('button', { name: /create watermarked image/i }),
   ).toBeDisabled();
+});
+
+test('updates the watermark rotation control in degrees', () => {
+  render(
+    <MemoryRouter>
+      <ImageWatermark />
+    </MemoryRouter>,
+  );
+
+  const rotation = screen.getByLabelText(/rotation/i);
+  fireEvent.change(rotation, { target: { value: '45' } });
+
+  expect(rotation).toHaveValue('45');
+  expect(screen.getByText('45°')).toBeInTheDocument();
 });
 
 test('registers an Image Watermark card that opens the tool route', async () => {
@@ -145,6 +160,12 @@ test('drags the text watermark and keeps its bounds inside the preview', async (
     await screen.findByRole('region', { name: /watermark preview/i });
     const watermark = await screen.findByRole('button', {
       name: /move watermark/i,
+    });
+    fireEvent.change(screen.getByLabelText(/rotation/i), {
+      target: { value: '45' },
+    });
+    expect(watermark).toHaveStyle({
+      transform: 'translate(-50%, -50%) rotate(45deg)',
     });
 
     fireEvent.pointerDown(watermark, {
