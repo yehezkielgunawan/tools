@@ -134,6 +134,7 @@ export default defineConfig({
           clientsClaim: true,
           navigateFallback: '/index.html',
           skipWaiting: false,
+          globIgnores: ['**/*.wasm'],
         },
       },
       webAppManifest: {
