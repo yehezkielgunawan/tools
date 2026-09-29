@@ -17,6 +17,10 @@ function renderApp(path = '/') {
               element={<h1>JSON tool page</h1>}
               path="/developer/json-formatter"
             />
+            <Route
+              element={<h1>Image Watermark page</h1>}
+              path="/image/image-watermark"
+            />
           </Routes>
         </AppShell>
       </ThemeProvider>
@@ -123,6 +127,37 @@ test('shows an empty state when there are no matching tools', () => {
   );
 
   expect(screen.getByText(/no tools found/i)).toBeInTheDocument();
+});
+
+test('moves through search results with arrow keys and opens the focused result with Enter', () => {
+  renderApp();
+  fireEvent.click(screen.getByRole('button', { name: /search tools/i }));
+
+  const dialog = screen.getByRole('dialog', { name: /search tools/i });
+  const searchInput = within(dialog).getByRole('searchbox', {
+    name: /search tools/i,
+  });
+  fireEvent.change(searchInput, { target: { value: 'image' } });
+
+  const [firstResult, secondResult] = within(dialog).getAllByRole('link');
+  if (!firstResult || !secondResult) {
+    throw new Error('Expected two image tool results');
+  }
+
+  fireEvent.keyDown(searchInput, { key: 'ArrowDown' });
+  expect(firstResult).toHaveFocus();
+  fireEvent.keyDown(firstResult, { key: 'ArrowDown' });
+  expect(secondResult).toHaveFocus();
+  fireEvent.keyDown(secondResult, { key: 'ArrowUp' });
+  expect(firstResult).toHaveFocus();
+  fireEvent.keyDown(firstResult, { key: 'ArrowUp' });
+  expect(secondResult).toHaveFocus();
+  fireEvent.keyDown(secondResult, { key: 'Enter' });
+
+  expect(
+    screen.getByRole('heading', { name: 'Image Watermark page' }),
+  ).toBeInTheDocument();
+  expect(dialog).not.toHaveAttribute('open');
 });
 
 test('navigates to a result and closes search when it is selected', () => {

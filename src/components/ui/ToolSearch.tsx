@@ -1,6 +1,7 @@
 import { Search } from 'lucide-react';
 import {
   createContext,
+  type KeyboardEvent as ReactKeyboardEvent,
   type ReactNode,
   useContext,
   useEffect,
@@ -100,6 +101,57 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
       )
     : tools;
 
+  const getSearchResultLinks = (): HTMLAnchorElement[] =>
+    Array.from(
+      dialogRef.current?.querySelectorAll<HTMLAnchorElement>(
+        '[data-tool-search-result]',
+      ) ?? [],
+    );
+
+  const handleSearchInputKeyDown = (
+    event: ReactKeyboardEvent<HTMLInputElement>,
+  ): void => {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') {
+      return;
+    }
+
+    const resultLinks = getSearchResultLinks();
+    if (resultLinks.length === 0) {
+      return;
+    }
+
+    event.preventDefault();
+    const resultToFocus =
+      event.key === 'ArrowDown'
+        ? resultLinks[0]
+        : resultLinks[resultLinks.length - 1];
+    resultToFocus?.focus();
+  };
+
+  const handleResultKeyDown = (
+    event: ReactKeyboardEvent<HTMLAnchorElement>,
+    index: number,
+  ): void => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      const resultLinks = getSearchResultLinks();
+      if (resultLinks.length === 0) {
+        return;
+      }
+
+      event.preventDefault();
+      const offset = event.key === 'ArrowDown' ? 1 : -1;
+      const nextIndex =
+        (index + offset + resultLinks.length) % resultLinks.length;
+      resultLinks[nextIndex]?.focus();
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      event.currentTarget.click();
+    }
+  };
+
   return (
     <ToolSearchContext.Provider value={{ openSearch }}>
       {children}
@@ -125,6 +177,7 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
               autoComplete="off"
               className="grow"
               onChange={(event) => setQuery(event.currentTarget.value)}
+              onKeyDown={handleSearchInputKeyDown}
               placeholder="Search tools by name or keyword..."
               ref={searchInputRef}
               type="search"
@@ -142,11 +195,13 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
                 aria-label="Tool search results"
                 className="menu menu-sm gap-1 p-0"
               >
-                {matchingTools.map((tool) => (
+                {matchingTools.map((tool, index) => (
                   <li key={tool.id}>
                     <Link
                       aria-label={tool.name}
                       className="items-start justify-between gap-4 rounded-box px-3 py-3"
+                      data-tool-search-result
+                      onKeyDown={(event) => handleResultKeyDown(event, index)}
                       onClick={() => dialogRef.current?.close()}
                       to={tool.path}
                     >
@@ -170,7 +225,10 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
             )}
           </div>
           <div className="border-t border-base-300 px-4 py-3 text-xs text-base-content/50">
-            Press Escape to close
+            <kbd className="kbd kbd-xs">↑</kbd> /{' '}
+            <kbd className="kbd kbd-xs">↓</kbd> to navigate,{' '}
+            <kbd className="kbd kbd-xs">Enter</kbd> to open,{' '}
+            <kbd className="kbd kbd-xs">Esc</kbd> to close
           </div>
         </div>
         <form className="modal-backdrop" method="dialog">
