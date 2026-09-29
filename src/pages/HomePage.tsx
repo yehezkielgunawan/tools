@@ -1,4 +1,5 @@
 import ToolCard from '../components/ui/ToolCard';
+import { ToolSearchButton } from '../components/ui/ToolSearch';
 import { tools } from '../tools/registry';
 
 export default function HomePage() {
@@ -15,9 +16,12 @@ export default function HomePage() {
           A customized collection of focused tools, organized in one place and
           ready whenever I need them.
         </p>
+        <div className="mt-8 w-full max-w-md">
+          <ToolSearchButton />
+        </div>
       </div>
 
-      <div className="mt-16 grid gap-4 md:grid-cols-2">
+      <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (
           <ToolCard key={tool.id} tool={tool} />
         ))}
