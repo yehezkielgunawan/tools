@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/yehezkielgunawan/tools/compare/v1.5.0...v1.6.0) (2026-09-29)
+
+
+### Features
+
+* Search Popup Modal ([31a101e](https://github.com/yehezkielgunawan/tools/commit/31a101e0cf554382abbf68be4b020c42e4e94322))
+
 ## [1.5.0](https://github.com/yehezkielgunawan/tools/compare/v1.4.0...v1.5.0) (2026-09-25)
 
 
