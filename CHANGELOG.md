@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.7.0](https://github.com/yehezkielgunawan/tools/compare/v1.6.0...v1.7.0) (2026-09-30)
+
+
+### Features
+
+* **a11y:** add keyboard controls for PDF editing ([0347577](https://github.com/yehezkielgunawan/tools/commit/0347577dab92c7bb983e0dbfb750bcbd7b00dca2))
+* **a11y:** improve QR controls and form feedback ([16d64e7](https://github.com/yehezkielgunawan/tools/commit/16d64e77be13b32c33efb5e01c08560828ce5aae))
+* **a11y:** improve route focus and tool navigation ([0f92308](https://github.com/yehezkielgunawan/tools/commit/0f92308e72be7dbc271441f43ccde1911021c42e))
+* add accessibility improvements ([e70c3e6](https://github.com/yehezkielgunawan/tools/commit/e70c3e6dd1c3c85589eea16cedfa795ae686ccc3))
+
+
+### Bug Fixes
+
+* **a11y:** set the document language ([c392166](https://github.com/yehezkielgunawan/tools/commit/c392166ab582d6f40fc2abde24d16c66d5faabd4))
+
 ## [1.6.0](https://github.com/yehezkielgunawan/tools/compare/v1.5.0...v1.6.0) (2026-09-29)
 
 
