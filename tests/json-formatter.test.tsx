@@ -41,6 +41,8 @@ test('keeps invalid JSON unchanged and reports the parsing error', () => {
 
   expect(editor).toHaveValue('{"active": }');
   expect(screen.getByRole('alert')).toHaveTextContent(/invalid json/i);
+  expect(editor).toHaveAttribute('aria-invalid', 'true');
+  expect(editor).toHaveAttribute('aria-describedby', 'json-status');
 });
 
 test('clears the editor and status', () => {

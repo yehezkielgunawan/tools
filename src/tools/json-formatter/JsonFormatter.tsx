@@ -67,6 +67,7 @@ export default function JsonFormatter() {
           </label>
           <textarea
             aria-describedby={status ? 'json-status' : undefined}
+            aria-invalid={status?.kind === 'error'}
             aria-label="JSON input"
             className="textarea min-h-96 w-full overflow-x-auto font-mono text-sm leading-6"
             id="json-input"
