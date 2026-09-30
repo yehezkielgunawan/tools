@@ -47,3 +47,30 @@ it('passes a completed signature stroke to the placement callback', () => {
     y: (120 - 20) / 220,
   });
 });
+
+it('opens as a modal and restores focus to its trigger when closed', () => {
+  let closed = false;
+  const trigger = document.createElement('button');
+  document.body.append(trigger);
+  trigger.focus();
+  const { unmount } = render(
+    <SignaturePad
+      color="#202124"
+      onApply={() => undefined}
+      onClose={() => {
+        closed = true;
+      }}
+    />,
+  );
+  const dialog = screen.getByRole('dialog', { name: 'Draw your signature' });
+  expect(dialog).toHaveTextContent(/use the typed signature field/i);
+  expect(dialog).toHaveAttribute('open');
+  expect(
+    screen.getByRole('button', { name: 'Close signature dialog' }),
+  ).toHaveFocus();
+  fireEvent(dialog, new Event('cancel', { cancelable: true }));
+  expect(closed).toBe(true);
+  unmount();
+  expect(trigger).toHaveFocus();
+  trigger.remove();
+});

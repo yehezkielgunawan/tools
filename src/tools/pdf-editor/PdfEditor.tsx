@@ -20,11 +20,14 @@ import ToolLayout from '../../components/layout/ToolLayout';
 import {
   type EditHistoryState,
   editHistoryReducer,
+  movePdfEdit,
   type NormalizedPoint,
   type PdfEdit,
   type PdfSignatureEdit,
   type PdfTextEdit,
+  resizePdfSignature,
 } from './editModel';
+import PdfKeyboardControls from './PdfKeyboardControls';
 import PdfPageView, { type PdfToolMode } from './PdfPageView';
 import { createEditedPdf, validatePdfCanEdit } from './pdfEngine';
 import { getPdfOpenErrorMessage, readPdfFile } from './pdfFiles';
@@ -425,7 +428,7 @@ export default function PdfEditor() {
         {!loaded ? (
           <div className="space-y-4">
             <label
-              className="group flex min-h-72 cursor-pointer flex-col items-center justify-center rounded-box border border-dashed border-base-content/20 bg-base-200/45 px-6 py-10 text-center transition-colors hover:border-primary/50 hover:bg-primary/5"
+              className="group flex min-h-72 cursor-pointer flex-col items-center justify-center rounded-box border border-dashed border-base-content/20 bg-base-200/45 px-6 py-10 text-center transition-colors hover:border-primary/50 hover:bg-primary/5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-primary"
               onDragOver={(event) => event.preventDefault()}
               onDrop={(event) => {
                 event.preventDefault();
@@ -434,6 +437,10 @@ export default function PdfEditor() {
             >
               <input
                 accept="application/pdf,.pdf"
+                aria-describedby={
+                  status?.kind === 'error' ? 'pdf-open-error' : undefined
+                }
+                aria-invalid={status?.kind === 'error'}
                 aria-label="Choose a PDF"
                 className="sr-only"
                 onChange={(event) => {
@@ -452,13 +459,13 @@ export default function PdfEditor() {
               <span className="text-lg font-semibold tracking-tight">
                 {isOpening ? 'Opening your PDF…' : 'Open a PDF to begin'}
               </span>
-              <span className="mt-2 max-w-sm text-sm leading-6 text-base-content/55">
+              <span className="mt-2 max-w-sm text-sm leading-6 text-base-content/75">
                 Choose a file from your device or drop it here. Your PDF stays
                 on this device.
               </span>
               <span className="btn btn-sm btn-outline mt-6">Choose PDF</span>
             </label>
-            <p className="flex items-start justify-center gap-2 px-2 text-center text-xs leading-5 text-base-content/45">
+            <p className="flex items-start justify-center gap-2 px-2 text-center text-xs leading-5 text-base-content/75">
               <ShieldCheck
                 aria-hidden="true"
                 className="mt-0.5 shrink-0"
@@ -482,7 +489,7 @@ export default function PdfEditor() {
                   >
                     {loaded.file.name}
                   </p>
-                  <p className="text-xs text-base-content/50">
+                  <p className="text-xs text-base-content/75">
                     {loaded.document.numPages}{' '}
                     {loaded.document.numPages === 1 ? 'page' : 'pages'}
                     <span className="mx-1.5">·</span>
@@ -756,7 +763,7 @@ export default function PdfEditor() {
                 >
                   <ZoomOut aria-hidden="true" size={16} />
                 </button>
-                <span className="min-w-12 text-center text-xs tabular-nums text-base-content/65">
+                <span className="min-w-12 text-center text-xs tabular-nums text-base-content/75">
                   {Math.round(zoom * 100)}%
                 </span>
                 <button
@@ -772,6 +779,58 @@ export default function PdfEditor() {
                 </button>
               </div>
             </div>
+
+            <PdfKeyboardControls
+              edits={edits.filter((edit) => edit.pageIndex === pageNumber - 1)}
+              selectedEditId={selectedEditId}
+              onAddText={(text, point) => {
+                addEdit({
+                  id: makeEditId(),
+                  pageIndex: pageNumber - 1,
+                  kind: 'text',
+                  x: point.x,
+                  y: point.y,
+                  text,
+                  fontSize: textSize,
+                  color,
+                });
+                setStatus({
+                  kind: 'success',
+                  message: 'Text added to this page.',
+                });
+              }}
+              onAddSignature={(name, point) => {
+                addEdit({
+                  id: makeEditId(),
+                  pageIndex: pageNumber - 1,
+                  kind: 'text',
+                  x: point.x,
+                  y: point.y,
+                  text: name,
+                  fontSize: 22,
+                  color,
+                });
+                setStatus({
+                  kind: 'success',
+                  message: 'Typed signature added to this page.',
+                });
+              }}
+              onAddLine={(start, end) => {
+                addPenStroke([start, end]);
+                setStatus({
+                  kind: 'success',
+                  message: 'Straight line added to this page.',
+                });
+              }}
+              onSelect={setSelectedEditId}
+              onMove={(edit, delta) =>
+                updateEdit(movePdfEdit(edit, delta.x, delta.y))
+              }
+              onResize={(edit, delta) =>
+                updateEdit(resizePdfSignature(edit, delta.x, delta.y))
+              }
+              onDelete={deleteSelectedEdit}
+            />
 
             <div className="flex min-h-80 max-h-[68vh] min-w-0 items-start overflow-auto rounded-box border border-base-300 bg-base-200/80 p-4 sm:p-6">
               {page ? (
@@ -793,14 +852,17 @@ export default function PdfEditor() {
                   zoom={zoom}
                 />
               ) : (
-                <div className="mx-auto flex min-h-72 items-center gap-3 text-sm text-base-content/55">
+                <div
+                  className="mx-auto flex min-h-72 items-center gap-3 text-sm text-base-content/75"
+                  role="status"
+                >
                   <span className="loading loading-spinner loading-sm" />
                   Preparing page…
                 </div>
               )}
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-base-content/45">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-1 text-xs text-base-content/75">
               <span>
                 {toolMode === 'select'
                   ? 'Select an edit to move or delete it.'
@@ -816,7 +878,7 @@ export default function PdfEditor() {
               </span>
             </div>
 
-            <p className="px-1 text-xs leading-5 text-base-content/40">
+            <p className="px-1 text-xs leading-5 text-base-content/75">
               Editing creates a new copy; existing digital signatures may no
               longer be valid.
             </p>
@@ -841,7 +903,11 @@ export default function PdfEditor() {
         )}
 
         {status?.kind === 'error' && !loaded ? (
-          <div className="alert alert-error py-2 text-sm" role="alert">
+          <div
+            className="alert alert-error py-2 text-sm"
+            id="pdf-open-error"
+            role="alert"
+          >
             <span>{status.message}</span>
             <button
               aria-label="Dismiss message"

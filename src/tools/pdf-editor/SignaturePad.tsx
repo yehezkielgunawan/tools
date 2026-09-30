@@ -45,8 +45,23 @@ export default function SignaturePad({
   onClose,
 }: SignaturePadProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const activeStrokeRef = useRef<NormalizedPoint[]>([]);
   const [strokes, setStrokes] = useState<NormalizedPoint[][]>([]);
+
+  useEffect(() => {
+    const previousFocus = document.activeElement;
+    const dialog = dialogRef.current;
+    dialog?.showModal();
+    closeButtonRef.current?.focus();
+    return () => {
+      dialog?.close();
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+        previousFocus.focus();
+      }
+    };
+  }, []);
   const [activeStroke, setActiveStroke] = useState<NormalizedPoint[]>([]);
 
   useEffect(() => {
@@ -98,23 +113,23 @@ export default function SignaturePad({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral/45 p-4 backdrop-blur-sm">
-      <button
-        aria-label="Close signature dialog"
-        className="absolute inset-0 cursor-default"
-        onClick={onClose}
-        type="button"
-      />
+    <dialog
+      aria-labelledby="signature-dialog-title"
+      className="modal modal-middle px-4"
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
+      ref={dialogRef}
+    >
       <section
         aria-labelledby="signature-dialog-title"
-        aria-modal="true"
-        className="card relative z-10 w-full max-w-2xl border border-base-300 bg-base-100 shadow-2xl"
-        role="dialog"
+        className="modal-box card w-full max-w-2xl border border-base-300 bg-base-100 p-0 shadow-2xl"
       >
         <div className="card-body gap-5 p-5 sm:p-7">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/45">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/75">
                 Signature
               </p>
               <h2
@@ -123,14 +138,19 @@ export default function SignaturePad({
               >
                 Draw your signature
               </h2>
-              <p className="mt-1 text-sm text-base-content/55">
+              <p className="mt-1 text-sm text-base-content/75">
                 It stays in this editing session only.
+              </p>
+              <p className="mt-1 text-sm text-base-content/75">
+                To sign without drawing, close this dialog and use the Typed
+                signature field under Edit without dragging.
               </p>
             </div>
             <button
               aria-label="Close signature dialog"
               className="btn btn-sm btn-circle btn-ghost"
               onClick={onClose}
+              ref={closeButtonRef}
               type="button"
             >
               <X aria-hidden="true" size={17} />
@@ -155,7 +175,7 @@ export default function SignaturePad({
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs leading-5 text-base-content/45">
+            <p className="text-xs leading-5 text-base-content/75">
               This is a visual signature, not a cryptographic digital signature.
             </p>
             <div className="flex gap-2">
@@ -180,6 +200,15 @@ export default function SignaturePad({
           </div>
         </div>
       </section>
-    </div>
+      <form className="modal-backdrop" method="dialog">
+        <button
+          aria-label="Dismiss signature dialog"
+          onClick={onClose}
+          type="submit"
+        >
+          Close
+        </button>
+      </form>
+    </dialog>
   );
 }
