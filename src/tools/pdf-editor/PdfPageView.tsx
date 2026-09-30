@@ -197,8 +197,13 @@ export default function PdfPageView({
       className="relative mx-auto shrink-0 overflow-hidden bg-white shadow-[0_18px_50px_-24px_rgba(20,28,40,0.5)] ring-1 ring-base-content/10"
       style={{ height: viewport.height, width: viewport.width }}
     >
-      <canvas aria-label={`PDF page ${page.pageNumber}`} ref={canvasRef} />
+      <canvas
+        aria-label={`Visual preview of PDF page ${page.pageNumber}. Use the Edit without dragging controls to edit this page.`}
+        ref={canvasRef}
+        role="img"
+      />
       <div
+        aria-hidden="true"
         className={`absolute inset-0 touch-none ${toolMode === 'pen' ? 'cursor-crosshair' : toolMode === 'text' || toolMode === 'signature' ? 'cursor-copy' : toolMode === 'select' ? 'cursor-default' : ''}`}
         onPointerCancel={handlePointerCancel}
         onPointerDown={handlePointerDown}
@@ -308,12 +313,9 @@ export default function PdfPageView({
                   ))}
                 </svg>
                 {edit.id === selectedEditId ? (
-                  <button
-                    aria-label="Resize signature"
-                    className="absolute -bottom-2 -right-2 size-4 cursor-nwse-resize rounded-full border border-primary bg-base-100 shadow-sm"
+                  <span
+                    className="absolute -bottom-3 -right-3 size-6 cursor-nwse-resize rounded-full border border-primary bg-base-100 shadow-sm"
                     data-resize-handle
-                    title="Resize signature"
-                    type="button"
                   />
                 ) : null}
               </div>

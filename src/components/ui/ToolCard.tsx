@@ -28,7 +28,6 @@ export default function ToolCard({ tool }: ToolCardProps) {
 
   return (
     <Link
-      aria-label={tool.name}
       className="card border border-base-300 bg-base-100 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
       to={tool.path}
     >
@@ -45,11 +44,11 @@ export default function ToolCard({ tool }: ToolCardProps) {
         </div>
         <div>
           <h2 className="text-lg font-semibold tracking-tight">{tool.name}</h2>
-          <p className="mt-2 text-sm leading-6 text-base-content/60">
+          <p className="mt-2 text-sm leading-6 text-base-content/75">
             {tool.description}
           </p>
         </div>
-        <span className="text-xs font-medium uppercase tracking-[0.16em] text-base-content/45">
+        <span className="text-xs font-medium uppercase tracking-[0.16em] text-base-content/75">
           {tool.category}
         </span>
       </div>

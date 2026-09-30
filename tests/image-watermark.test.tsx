@@ -88,7 +88,7 @@ test('registers an Image Watermark card that opens the tool route', async () => 
   );
 
   expect(
-    await screen.findByRole('link', { name: 'Image Watermark' }),
+    await screen.findByRole('link', { name: /Image Watermark/ }),
   ).toHaveAttribute('href', '/image/image-watermark');
   home.unmount();
 

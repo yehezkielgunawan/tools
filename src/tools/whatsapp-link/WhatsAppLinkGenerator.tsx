@@ -42,7 +42,7 @@ export default function WhatsAppLinkGenerator() {
         <div>
           <label className="label" htmlFor="whatsapp-phone">
             <span className="label-text font-medium">Phone number</span>
-            <span className="label-text-alt text-base-content/50">
+            <span className="label-text-alt text-base-content/75">
               Required
             </span>
           </label>
@@ -76,7 +76,7 @@ export default function WhatsAppLinkGenerator() {
         <div>
           <label className="label" htmlFor="whatsapp-message">
             <span className="label-text font-medium">Message</span>
-            <span className="label-text-alt text-base-content/50">
+            <span className="label-text-alt text-base-content/75">
               Optional
             </span>
           </label>

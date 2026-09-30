@@ -97,6 +97,19 @@ export default function QrCodeGenerator() {
     link.click();
   };
 
+  const handleTabKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    const nextMode =
+      event.key === 'ArrowRight' || event.key === 'End'
+        ? 'vcard'
+        : event.key === 'ArrowLeft' || event.key === 'Home'
+          ? 'url'
+          : null;
+    if (!nextMode) return;
+    event.preventDefault();
+    setMode(nextMode);
+    document.getElementById(`qr-${nextMode}-tab`)?.focus();
+  };
+
   return (
     <ToolLayout
       category="Generator"
@@ -115,8 +128,10 @@ export default function QrCodeGenerator() {
               aria-selected={mode === 'url'}
               className={`tab gap-2 ${mode === 'url' ? 'tab-active' : ''}`}
               id="qr-url-tab"
+              onKeyDown={handleTabKeyDown}
               onClick={() => setMode('url')}
               role="tab"
+              tabIndex={mode === 'url' ? 0 : -1}
               type="button"
             >
               <Link2 aria-hidden="true" size={16} /> URL
@@ -126,8 +141,10 @@ export default function QrCodeGenerator() {
               aria-selected={mode === 'vcard'}
               className={`tab gap-2 ${mode === 'vcard' ? 'tab-active' : ''}`}
               id="qr-vcard-tab"
+              onKeyDown={handleTabKeyDown}
               onClick={() => setMode('vcard')}
               role="tab"
+              tabIndex={mode === 'vcard' ? 0 : -1}
               type="button"
             >
               <UserRound aria-hidden="true" size={16} /> vCard
@@ -146,6 +163,9 @@ export default function QrCodeGenerator() {
                   URL
                 </label>
                 <input
+                  aria-describedby={
+                    payload.error ? 'qr-url-error' : 'qr-url-help'
+                  }
                   aria-invalid={Boolean(payload.error)}
                   autoComplete="url"
                   className="input w-full"
@@ -155,7 +175,10 @@ export default function QrCodeGenerator() {
                   type="url"
                   value={url}
                 />
-                <p className="mt-2 text-xs text-base-content/60">
+                <p
+                  className="mt-2 text-xs text-base-content/75"
+                  id="qr-url-help"
+                >
                   Links without a prefix will use https://.
                 </p>
               </div>
@@ -164,7 +187,7 @@ export default function QrCodeGenerator() {
                 <div className="sm:col-span-2">
                   <label className="label" htmlFor="qr-name">
                     Full name{' '}
-                    <span className="text-base-content/55">Required</span>
+                    <span className="text-base-content/75">Required</span>
                   </label>
                   <input
                     className="input w-full"
@@ -242,6 +265,10 @@ export default function QrCodeGenerator() {
                     Website
                   </label>
                   <input
+                    aria-describedby={
+                      payload.error ? 'qr-website-error' : undefined
+                    }
+                    aria-invalid={Boolean(payload.error)}
                     className="input w-full"
                     id="qr-website"
                     onChange={(event) =>
@@ -263,17 +290,14 @@ export default function QrCodeGenerator() {
         >
           <div className="mb-5 w-full">
             <h2 className="text-base font-semibold">Preview</h2>
-            <p className="mt-1 text-sm text-base-content/60">
+            <p className="mt-1 text-sm text-base-content/75">
               Ready to scan and save.
             </p>
           </div>
-          <div
-            aria-live="polite"
-            className="flex aspect-square w-full max-w-72 items-center justify-center overflow-hidden rounded-box border border-base-300 bg-white p-3 text-center"
-          >
+          <div className="flex aspect-square w-full max-w-72 items-center justify-center overflow-hidden rounded-box border border-base-300 bg-white p-3 text-center">
             {image && !error ? (
               <img
-                alt="QR code preview"
+                alt={`QR code preview for ${mode === 'url' ? payload.value : contact.name}`}
                 className="h-full w-full"
                 height="1024"
                 src={image}
@@ -287,8 +311,15 @@ export default function QrCodeGenerator() {
               </p>
             )}
           </div>
+          <p className="sr-only" role="status">
+            {image && !error ? 'QR code ready to download' : ''}
+          </p>
           {error ? (
-            <p className="mt-4 w-full text-sm text-error" role="alert">
+            <p
+              className="mt-4 w-full text-sm text-error"
+              id={mode === 'url' ? 'qr-url-error' : 'qr-website-error'}
+              role="alert"
+            >
               {error}
             </p>
           ) : null}
@@ -300,7 +331,7 @@ export default function QrCodeGenerator() {
           >
             <Download aria-hidden="true" size={17} /> Download PNG
           </button>
-          <p className="mt-3 text-center text-xs text-base-content/55">
+          <p className="mt-3 text-center text-xs text-base-content/75">
             1024 × 1024 px · PNG
           </p>
         </section>

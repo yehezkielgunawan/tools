@@ -54,6 +54,7 @@ export default defineConfig({
   },
   html: {
     favicon: './public/yehezgun-tools-favicon.svg',
+    template: './src/index.html',
     title: homePageMetadata.browserTitle,
     meta: {
       description: homePageMetadata.description,

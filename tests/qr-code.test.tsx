@@ -44,6 +44,9 @@ test('previews a normalized URL live and enables PNG download', async () => {
     color: { dark: '#000000ff', light: '#ffffffff' },
   });
   expect(screen.getByRole('button', { name: /download png/i })).toBeEnabled();
+  expect(screen.getByRole('status')).toHaveTextContent(
+    'QR code ready to download',
+  );
 });
 
 test('downloads the rendered PNG with a descriptive filename', async () => {
@@ -94,7 +97,36 @@ test('clears stale previews and reports invalid URLs', async () => {
     screen.queryByRole('img', { name: /qr code preview/i }),
   ).not.toBeInTheDocument();
   expect(screen.getByRole('alert')).toHaveTextContent(/valid http/i);
+  expect(input).toHaveAttribute('aria-describedby', 'qr-url-error');
   expect(screen.getByRole('button', { name: /download png/i })).toBeDisabled();
+});
+
+test('moves between tabs with arrow keys and keeps only the selected tab in the tab order', () => {
+  renderTool();
+  const urlTab = screen.getByRole('tab', { name: 'URL' });
+  const contactTab = screen.getByRole('tab', { name: 'vCard' });
+  expect(urlTab).toHaveAttribute('tabindex', '0');
+  expect(contactTab).toHaveAttribute('tabindex', '-1');
+  urlTab.focus();
+  fireEvent.keyDown(urlTab, { key: 'ArrowRight' });
+  expect(contactTab).toHaveFocus();
+  expect(contactTab).toHaveAttribute('aria-selected', 'true');
+  fireEvent.keyDown(contactTab, { key: 'Home' });
+  expect(urlTab).toHaveFocus();
+  expect(urlTab).toHaveAttribute('aria-selected', 'true');
+});
+
+test('associates an invalid vCard website with its field', () => {
+  renderTool();
+  fireEvent.click(screen.getByRole('tab', { name: 'vCard' }));
+  fireEvent.change(screen.getByRole('textbox', { name: /full name/i }), {
+    target: { value: 'Ada Lovelace' },
+  });
+  const website = screen.getByRole('textbox', { name: 'Website' });
+  fireEvent.change(website, { target: { value: 'https://' } });
+  expect(screen.getByRole('alert')).toBeInTheDocument();
+  expect(website).toHaveAttribute('aria-invalid', 'true');
+  expect(website).toHaveAttribute('aria-describedby', 'qr-website-error');
 });
 
 test('reports QR capacity errors and never offers a stale download', async () => {

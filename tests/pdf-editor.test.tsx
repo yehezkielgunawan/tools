@@ -50,6 +50,9 @@ describe('PDF Editor', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       /not a valid pdf/i,
     );
-    expect(screen.getByLabelText('Choose a PDF')).toBeInTheDocument();
+    expect(screen.getByLabelText('Choose a PDF')).toHaveAttribute(
+      'aria-describedby',
+      'pdf-open-error',
+    );
   });
 });

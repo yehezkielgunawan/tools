@@ -426,7 +426,7 @@ export default function ImageWatermark() {
             type="file"
           />
           <p
-            className="text-xs leading-5 text-base-content/55"
+            className="text-xs leading-5 text-base-content/75"
             id="watermark-file-help"
           >
             One photo at a time, up to 32 MB. Large images are resized to a
@@ -441,7 +441,7 @@ export default function ImageWatermark() {
                 <p className="break-all text-sm font-medium">
                   {selectedPhoto.file.name}
                 </p>
-                <p className="mt-1 text-sm text-base-content/60">
+                <p className="mt-1 text-sm text-base-content/75">
                   {selectedPhoto.image.width.toLocaleString()} ×{' '}
                   {selectedPhoto.image.height.toLocaleString()} px
                   <span className="mx-2">·</span>
@@ -464,7 +464,7 @@ export default function ImageWatermark() {
               >
                 02 <span className="mx-2 text-base-content/35">/</span> Preview
               </h2>
-              <p className="mt-1 text-xs text-base-content/55">
+              <p className="mt-1 text-xs text-base-content/75">
                 Drag the outlined text to place it. Use arrow keys for fine
                 adjustments.
               </p>
@@ -484,7 +484,7 @@ export default function ImageWatermark() {
                 <button
                   aria-keyshortcuts="ArrowUp ArrowDown ArrowLeft ArrowRight"
                   aria-label={`Move watermark: ${watermarkText.trim()}. Drag to move or use arrow keys.`}
-                  className="absolute z-10 max-w-[90%] touch-none cursor-move whitespace-nowrap rounded-md border border-dashed border-white/75 bg-black/35 px-2 py-1 text-center font-semibold leading-tight text-shadow-sm shadow-lg backdrop-blur-[2px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  className="absolute z-10 min-h-7 max-w-[90%] touch-none cursor-move whitespace-nowrap rounded-md border border-dashed border-white/75 bg-black/35 px-2 py-1 text-center font-semibold leading-tight text-shadow-sm shadow-lg backdrop-blur-[2px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                   onKeyDown={handleWatermarkKeyDown}
                   onPointerCancel={handlePointerUp}
                   onPointerDown={handlePointerDown}
@@ -513,7 +513,7 @@ export default function ImageWatermark() {
               <span className="rounded-box bg-base-100 p-3 text-base-content/55">
                 <ImageIcon aria-hidden="true" size={25} />
               </span>
-              <p className="max-w-xs text-sm leading-6 text-base-content/60">
+              <p className="max-w-xs text-sm leading-6 text-base-content/75">
                 Choose a photo to see and position your watermark here.
               </p>
             </div>
@@ -553,7 +553,7 @@ export default function ImageWatermark() {
                   value={watermarkText}
                 />
               </div>
-              <p className="text-xs text-base-content/55">
+              <p className="text-xs text-base-content/75">
                 Keep it short for a clear, readable mark.
               </p>
             </div>
@@ -564,7 +564,7 @@ export default function ImageWatermark() {
                   Text size
                 </label>
                 <output
-                  className="text-sm tabular-nums text-base-content/65"
+                  className="text-sm tabular-nums text-base-content/75"
                   htmlFor="watermark-size"
                 >
                   {fontScale}%
@@ -595,7 +595,7 @@ export default function ImageWatermark() {
                   Opacity
                 </label>
                 <output
-                  className="text-sm tabular-nums text-base-content/65"
+                  className="text-sm tabular-nums text-base-content/75"
                   htmlFor="watermark-opacity"
                 >
                   {opacity}%
@@ -626,7 +626,7 @@ export default function ImageWatermark() {
                   Rotation
                 </label>
                 <output
-                  className="text-sm tabular-nums text-base-content/65"
+                  className="text-sm tabular-nums text-base-content/75"
                   htmlFor="watermark-rotation"
                 >
                   {rotation}°
@@ -646,7 +646,7 @@ export default function ImageWatermark() {
                 type="range"
                 value={rotation}
               />
-              <p className="text-xs text-base-content/55">
+              <p className="text-xs text-base-content/75">
                 Rotate clockwise or counterclockwise. Zero keeps the text
                 horizontal.
               </p>
@@ -669,7 +669,7 @@ export default function ImageWatermark() {
                   type="color"
                   value={color}
                 />
-                <span className="text-sm text-base-content/60">
+                <span className="text-sm text-base-content/75">
                   A soft shadow keeps the text readable on light or dark photos.
                 </span>
               </div>
@@ -749,7 +749,7 @@ export default function ImageWatermark() {
                 >
                   Image ready
                 </h2>
-                <p className="mt-1 text-xs text-base-content/60">
+                <p className="mt-1 text-xs text-base-content/75">
                   {artifact.width.toLocaleString()} ×{' '}
                   {artifact.height.toLocaleString()} px
                   <span className="mx-2">·</span>
@@ -765,7 +765,7 @@ export default function ImageWatermark() {
                 Download image
               </a>
             </div>
-            <p className="break-all text-xs text-base-content/55">
+            <p className="break-all text-xs text-base-content/75">
               {artifact.name}
             </p>
           </section>
