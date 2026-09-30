@@ -231,7 +231,7 @@ export default function ImageCompressor() {
             type="file"
           />
           <p
-            className="text-xs leading-5 text-base-content/55"
+            className="text-xs leading-5 text-base-content/75"
             id="image-file-help"
           >
             One image at a time. Photos above 24 megapixels may need to be
@@ -246,7 +246,7 @@ export default function ImageCompressor() {
                 <p className="break-all text-sm font-medium">
                   {selected.file.name}
                 </p>
-                <p className="mt-1 text-sm text-base-content/60">
+                <p className="mt-1 text-sm text-base-content/75">
                   {selected.info.width} × {selected.info.height} px
                   <span className="mx-2">·</span>
                   {formatBytes(selected.file.size)}
@@ -274,7 +274,7 @@ export default function ImageCompressor() {
               />
               <span>
                 <span className="block text-sm font-medium">HTML Canvas</span>
-                <span className="block text-xs text-base-content/55">
+                <span className="block text-xs text-base-content/75">
                   Built into your browser
                 </span>
               </span>
@@ -291,7 +291,7 @@ export default function ImageCompressor() {
               />
               <span>
                 <span className="block text-sm font-medium">pixo-wasm</span>
-                <span className="block text-xs text-base-content/55">
+                <span className="block text-xs text-base-content/75">
                   Rust encoder in a worker
                 </span>
               </span>
@@ -353,7 +353,7 @@ export default function ImageCompressor() {
                 </option>
               </select>
               {!originalAllowed ? (
-                <p className="text-xs leading-5 text-base-content/55">
+                <p className="text-xs leading-5 text-base-content/75">
                   Original dimensions exceed the mobile-safe canvas limit.
                 </p>
               ) : null}
@@ -367,7 +367,7 @@ export default function ImageCompressor() {
                   JPEG quality
                 </label>
                 <output
-                  className="text-sm tabular-nums text-base-content/65"
+                  className="text-sm tabular-nums text-base-content/75"
                   htmlFor="image-quality"
                 >
                   {quality} / 100
@@ -386,7 +386,7 @@ export default function ImageCompressor() {
                 type="range"
                 value={quality}
               />
-              <p className="text-xs leading-5 text-base-content/55">
+              <p className="text-xs leading-5 text-base-content/75">
                 Higher quality keeps more detail and usually creates a larger
                 file.
               </p>
@@ -407,7 +407,7 @@ export default function ImageCompressor() {
                 <span className="block text-sm font-medium">
                   Allow lossy PNG
                 </span>
-                <span className="block text-xs leading-5 text-base-content/55">
+                <span className="block text-xs leading-5 text-base-content/75">
                   Reduce the palette to up to 256 colors for a smaller file.
                 </span>
               </span>
@@ -474,7 +474,7 @@ export default function ImageCompressor() {
                 <h2 className="text-sm font-semibold" id="image-result-heading">
                   Compression result
                 </h2>
-                <p className="mt-1 text-xs text-base-content/55">
+                <p className="mt-1 text-xs text-base-content/75">
                   {artifact.width} × {artifact.height} px
                   <span className="mx-2">·</span>
                   {artifact.mimeType === 'image/jpeg' ? 'JPEG' : 'PNG'}

@@ -18,7 +18,7 @@ export default function ToolLayout({
   return (
     <section className="mx-auto w-full max-w-5xl px-4 py-8 sm:px-8 lg:py-12">
       <Link
-        className="link link-hover inline-flex items-center gap-2 text-sm font-medium text-base-content/60 no-underline"
+        className="link link-hover inline-flex items-center gap-2 text-sm font-medium text-base-content/75 no-underline"
         to="/"
       >
         <ArrowLeft aria-hidden="true" size={15} />
@@ -42,7 +42,7 @@ export default function ToolLayout({
           <div className="card-body p-4 sm:p-7">{children}</div>
         </div>
 
-        <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-base-content/55">
+        <p className="mt-4 flex items-start gap-2 text-sm leading-6 text-base-content/75">
           <ShieldCheck
             aria-hidden="true"
             className="mt-0.5 shrink-0"

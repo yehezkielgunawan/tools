@@ -60,7 +60,7 @@ export default function ChangelogPage() {
                   v{release.version}
                 </h2>
                 <time
-                  className="text-sm text-base-content/55"
+                  className="text-sm text-base-content/75"
                   dateTime={release.date}
                 >
                   {formatReleaseDate(release.date)}
@@ -80,7 +80,7 @@ export default function ChangelogPage() {
                       key={section}
                     >
                       <h3
-                        className="text-xs font-bold uppercase tracking-[0.18em] text-base-content/50"
+                        className="text-xs font-bold uppercase tracking-[0.18em] text-base-content/75"
                         id={`release-${release.version}-${section}`}
                       >
                         {SECTION_LABELS[section]}
