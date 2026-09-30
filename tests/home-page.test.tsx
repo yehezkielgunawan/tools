@@ -15,14 +15,19 @@ test('renders all registered tools in one grid with their category labels', () =
   expect(grids).toHaveLength(1);
 
   const grid = grids[0];
-  if (!grid) throw new Error('Expected homepage tool grid');
+  if (!(grid instanceof HTMLElement)) {
+    throw new Error('Expected homepage tool grid');
+  }
 
   expect(grid).toHaveClass('grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3');
 
   const gridQueries = within(grid);
   for (const tool of tools) {
-    const toolCard = gridQueries.getByRole('link', { name: tool.name });
+    const toolCard = gridQueries.getByRole('link', {
+      name: new RegExp(tool.name),
+    });
     expect(toolCard).toHaveAttribute('href', tool.path);
+    expect(toolCard).not.toHaveAttribute('aria-label');
     expect(within(toolCard).getByText(tool.category)).toBeInTheDocument();
   }
 

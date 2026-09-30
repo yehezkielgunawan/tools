@@ -15,7 +15,7 @@ import ThemeToggle from './ThemeToggle';
 
 interface SidebarNavigationProps {
   id?: string;
-  onNavigate?: () => void;
+  onNavigate?: (destination: string) => void;
 }
 
 const icons = {
@@ -39,7 +39,7 @@ export default function SidebarNavigation({
     >
       <Link
         className="mb-8 flex items-center gap-3 rounded-box px-2 py-1 text-base font-semibold tracking-tight no-underline transition-colors hover:bg-base-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-        onClick={onNavigate}
+        onClick={() => onNavigate?.('/')}
         to="/"
       >
         <img
@@ -59,7 +59,7 @@ export default function SidebarNavigation({
                 isActive ? 'active font-semibold' : undefined
               }
               end
-              onClick={onNavigate}
+              onClick={() => onNavigate?.('/')}
               to="/"
             >
               <Grid2X2 aria-hidden="true" size={17} strokeWidth={1.8} />
@@ -72,7 +72,7 @@ export default function SidebarNavigation({
                 isActive ? 'active font-semibold' : undefined
               }
               end
-              onClick={onNavigate}
+              onClick={() => onNavigate?.('/changelog')}
               to="/changelog"
             >
               <History aria-hidden="true" size={17} strokeWidth={1.8} />
@@ -93,7 +93,7 @@ export default function SidebarNavigation({
                 key={category.id}
               >
                 <h2
-                  className="px-3 pb-2 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-base-content/60"
+                  className="px-3 pb-2 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-base-content/75"
                   id={`${category.id}-sidebar`}
                 >
                   {category.label}
@@ -108,7 +108,7 @@ export default function SidebarNavigation({
                           className={({ isActive }) =>
                             isActive ? 'active font-semibold' : undefined
                           }
-                          onClick={onNavigate}
+                          onClick={() => onNavigate?.(tool.path)}
                           to={tool.path}
                         >
                           <Icon
@@ -130,12 +130,12 @@ export default function SidebarNavigation({
 
       <div className="mt-8 border-t border-base-300 pt-4">
         <ThemeToggle className="w-full justify-start gap-3 px-3" />
-        <p className="mt-4 px-3 text-xs leading-5 text-base-content/60">
+        <p className="mt-4 px-3 text-xs leading-5 text-base-content/75">
           A personal workspace for the tools I reach for most.
         </p>
-        <p className="mt-2 px-3 text-xs text-base-content/45">v{APP_VERSION}</p>
+        <p className="mt-2 px-3 text-xs text-base-content/75">v{APP_VERSION}</p>
         <a
-          className="link link-hover mt-4 inline-block px-3 text-xs text-base-content/55"
+          className="link link-hover mt-4 inline-block px-3 text-xs text-base-content/75"
           href="https://yehezgun.com"
           rel="noopener noreferrer"
           target="_blank"

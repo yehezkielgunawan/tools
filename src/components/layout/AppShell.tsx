@@ -1,6 +1,6 @@
 import { Menu } from 'lucide-react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { ToolSearchProvider } from '../ui/ToolSearch';
 import SidebarNavigation from './SidebarNavigation';
 import ThemeToggle from './ThemeToggle';
@@ -14,11 +14,14 @@ const DRAWER_PANEL_ID = 'app-navigation-panel';
 const DESKTOP_BREAKPOINT = 1024;
 
 export default function AppShell({ children }: AppShellProps) {
+  const location = useLocation();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const wasDrawerOpenRef = useRef(false);
   const isDesktopRef = useRef(false);
+  const previousLocationRef = useRef(location.key);
+  const navigatedFromDrawerRef = useRef(false);
 
   const closeDrawer = (): void => {
     setIsDrawerOpen(false);
@@ -26,9 +29,14 @@ export default function AppShell({ children }: AppShellProps) {
 
   useEffect(() => {
     if (!isDrawerOpen) {
-      if (wasDrawerOpenRef.current && !isDesktopRef.current) {
+      if (
+        wasDrawerOpenRef.current &&
+        !isDesktopRef.current &&
+        !navigatedFromDrawerRef.current
+      ) {
         menuButtonRef.current?.focus();
       }
+      navigatedFromDrawerRef.current = false;
       wasDrawerOpenRef.current = false;
       return;
     }
@@ -102,9 +110,37 @@ export default function AppShell({ children }: AppShellProps) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  useEffect(() => {
+    if (previousLocationRef.current === location.key) return;
+    previousLocationRef.current = location.key;
+
+    const main = document.getElementById('main-content');
+    if (!main) return;
+    const focusDestination = (): boolean => {
+      const heading = main.querySelector<HTMLElement>('h1');
+      if (!heading) return false;
+      heading.tabIndex = -1;
+      heading.focus();
+      return true;
+    };
+
+    if (focusDestination()) return;
+    const observer = new MutationObserver(() => {
+      if (focusDestination()) observer.disconnect();
+    });
+    observer.observe(main, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [location.key]);
+
   return (
     <ToolSearchProvider>
       <div className="drawer min-h-screen bg-base-200 text-base-content lg:drawer-open">
+        <a
+          className="btn btn-primary fixed left-4 top-4 z-50 -translate-y-24 focus:translate-y-0"
+          href="#main-content"
+        >
+          Skip to main content
+        </a>
         <input
           aria-hidden="true"
           checked={isDrawerOpen}
@@ -156,7 +192,9 @@ export default function AppShell({ children }: AppShellProps) {
             </div>
           </header>
 
-          <main className="min-w-0 flex-1">{children}</main>
+          <main className="min-w-0 flex-1" id="main-content" tabIndex={-1}>
+            {children}
+          </main>
         </div>
 
         <div className="drawer-side z-40" ref={drawerRef}>
@@ -165,7 +203,14 @@ export default function AppShell({ children }: AppShellProps) {
             className="drawer-overlay"
             htmlFor={DRAWER_ID}
           />
-          <SidebarNavigation id={DRAWER_PANEL_ID} onNavigate={closeDrawer} />
+          <SidebarNavigation
+            id={DRAWER_PANEL_ID}
+            onNavigate={(destination) => {
+              navigatedFromDrawerRef.current =
+                destination !== location.pathname;
+              closeDrawer();
+            }}
+          />
         </div>
       </div>
     </ToolSearchProvider>

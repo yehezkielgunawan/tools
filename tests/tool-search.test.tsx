@@ -126,7 +126,22 @@ test('shows an empty state when there are no matching tools', () => {
     { target: { value: 'unlisted utility' } },
   );
 
-  expect(screen.getByText(/no tools found/i)).toBeInTheDocument();
+  expect(screen.getByText(/no tools found for/i)).toBeInTheDocument();
+});
+
+test('announces a short result count rather than the full result list', () => {
+  renderApp();
+  fireEvent.click(screen.getByRole('button', { name: /search tools/i }));
+  const dialog = screen.getByRole('dialog', { name: /search tools/i });
+  fireEvent.change(within(dialog).getByRole('searchbox'), {
+    target: { value: 'unlisted utility' },
+  });
+  expect(within(dialog).getByRole('status')).toHaveTextContent(
+    'No tools found',
+  );
+  expect(within(dialog).getByRole('status')).not.toContainElement(
+    within(dialog).getByText(/to navigate/i),
+  );
 });
 
 test('moves through search results with arrow keys and opens the focused result with Enter', () => {

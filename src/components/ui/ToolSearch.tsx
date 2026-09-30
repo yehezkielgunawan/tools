@@ -186,10 +186,12 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
             <kbd className="kbd kbd-sm hidden sm:inline-flex">ESC</kbd>
           </label>
 
-          <div
-            aria-live="polite"
-            className="max-h-[min(60vh,24rem)] overflow-y-auto p-2"
-          >
+          <p className="sr-only" role="status">
+            {matchingTools.length === 0
+              ? 'No tools found'
+              : `${matchingTools.length} ${matchingTools.length === 1 ? 'tool' : 'tools'} found`}
+          </p>
+          <div className="max-h-[min(60vh,24rem)] overflow-y-auto p-2">
             {matchingTools.length > 0 ? (
               <ul
                 aria-label="Tool search results"
@@ -198,7 +200,6 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
                 {matchingTools.map((tool, index) => (
                   <li key={tool.id}>
                     <Link
-                      aria-label={tool.name}
                       className="items-start justify-between gap-4 rounded-box px-3 py-3"
                       data-tool-search-result
                       onKeyDown={(event) => handleResultKeyDown(event, index)}
@@ -207,7 +208,7 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
                     >
                       <span className="min-w-0">
                         <span className="block font-medium">{tool.name}</span>
-                        <span className="mt-1 block text-xs leading-5 text-base-content/60">
+                        <span className="mt-1 block text-xs leading-5 text-base-content/75">
                           {tool.description}
                         </span>
                       </span>
@@ -219,12 +220,12 @@ export function ToolSearchProvider({ children }: ToolSearchProviderProps) {
                 ))}
               </ul>
             ) : (
-              <p className="px-4 py-8 text-center text-sm text-base-content/60">
+              <p className="px-4 py-8 text-center text-sm text-base-content/75">
                 No tools found for “{query.trim()}”.
               </p>
             )}
           </div>
-          <div className="border-t border-base-300 px-4 py-3 text-xs text-base-content/50">
+          <div className="border-t border-base-300 px-4 py-3 text-xs text-base-content/75">
             <kbd className="kbd kbd-xs">↑</kbd> /{' '}
             <kbd className="kbd kbd-xs">↓</kbd> to navigate,{' '}
             <kbd className="kbd kbd-xs">Enter</kbd> to open,{' '}
@@ -249,7 +250,7 @@ export function ToolSearchButton() {
       aria-haspopup="dialog"
       aria-keyshortcuts="Control+K Meta+K"
       aria-label="Search tools (Command or Control plus K)"
-      className="btn h-12 w-full justify-between border border-base-300 bg-base-100 px-4 font-normal text-base-content/60 shadow-sm hover:border-base-content/30 hover:bg-base-100"
+      className="btn h-12 w-full justify-between border border-base-300 bg-base-100 px-4 font-normal text-base-content/75 shadow-sm hover:border-base-content/30 hover:bg-base-100"
       onClick={(event) => searchContext?.openSearch(event.currentTarget)}
       type="button"
     >
