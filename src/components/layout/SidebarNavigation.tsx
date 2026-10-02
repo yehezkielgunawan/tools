@@ -1,6 +1,7 @@
 import {
   Braces,
   FileText,
+  Gift,
   Grid2X2,
   History,
   Image as ImageIcon,
@@ -25,6 +26,7 @@ const icons = {
   'message-circle': MessageCircle,
   'qr-code': QrCode,
   stamp: Stamp,
+  gift: Gift,
 } as const;
 
 export default function SidebarNavigation({

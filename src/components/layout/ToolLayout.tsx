@@ -6,6 +6,7 @@ interface ToolLayoutProps {
   category: string;
   children: ReactNode;
   description: string;
+  privacyNote?: string;
   title: string;
 }
 
@@ -13,6 +14,7 @@ export default function ToolLayout({
   category,
   children,
   description,
+  privacyNote = 'Runs locally in your browser. Your data is not uploaded to a server.',
   title,
 }: ToolLayoutProps) {
   return (
@@ -48,9 +50,7 @@ export default function ToolLayout({
             className="mt-0.5 shrink-0"
             size={16}
           />
-          <span>
-            Runs locally in your browser. Your data is not uploaded to a server.
-          </span>
+          <span>{privacyNote}</span>
         </p>
       </div>
     </section>

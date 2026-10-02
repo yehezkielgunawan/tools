@@ -2,6 +2,7 @@ export type ToolCategory = 'generator' | 'developer' | 'image' | 'pdf';
 export type ToolIconName =
   | 'message-circle'
   | 'qr-code'
+  | 'gift'
   | 'braces'
   | 'image'
   | 'stamp'
@@ -45,6 +46,25 @@ export const tools = [
     category: 'generator',
     keywords: ['qr', 'qrcode', 'url', 'vcard', 'contact'],
     icon: 'qr-code',
+  },
+  {
+    id: 'greeting-card',
+    name: 'Greeting Card Generator',
+    description:
+      'Make personalized cards for birthdays, congratulations, appreciation, and everyday greetings.',
+    path: '/generator/greeting-card',
+    category: 'generator',
+    keywords: [
+      'greeting',
+      'card',
+      'birthday',
+      'congratulations',
+      'appreciation',
+      'thank you',
+      'celebration',
+      'png',
+    ],
+    icon: 'gift',
   },
   {
     id: 'json-formatter',

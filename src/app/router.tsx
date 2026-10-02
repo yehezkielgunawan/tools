@@ -6,6 +6,7 @@ import NotFoundPage from '../pages/NotFoundPage';
 const ChangelogPage = lazy(() => import('../pages/ChangelogPage'));
 const WhatsAppLinkGenerator = lazy(() => import('../tools/whatsapp-link'));
 const QrCodeGenerator = lazy(() => import('../tools/qr-code'));
+const GreetingCardGenerator = lazy(() => import('../tools/greeting-card'));
 const JsonFormatter = lazy(() => import('../tools/json-formatter'));
 const ImageCompressor = lazy(() => import('../tools/image-compressor'));
 const ImageWatermark = lazy(() => import('../tools/image-watermark'));
@@ -33,6 +34,10 @@ export function AppRoutes() {
           path="/generator/whatsapp-link"
         />
         <Route element={<QrCodeGenerator />} path="/generator/qr-code" />
+        <Route
+          element={<GreetingCardGenerator />}
+          path="/generator/greeting-card"
+        />
         <Route element={<JsonFormatter />} path="/developer/json-formatter" />
         <Route element={<ImageCompressor />} path="/image/image-compressor" />
         <Route element={<ImageWatermark />} path="/image/image-watermark" />
