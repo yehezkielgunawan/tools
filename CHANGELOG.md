@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.0](https://github.com/yehezkielgunawan/tools/compare/v1.7.0...v1.8.0) (2026-10-02)
+
+
+### Features
+
+* add greeting card generator ([8d358a7](https://github.com/yehezkielgunawan/tools/commit/8d358a70e8f9c0fd61a9c8e812fad48daa5b9bbc))
+* **greeting-card:** add card validation and rendering client ([eb8acf1](https://github.com/yehezkielgunawan/tools/commit/eb8acf10b4156dbe0b11192f40b59e626a96e328))
+* **greeting-card:** add editor and toolkit integration ([b721b17](https://github.com/yehezkielgunawan/tools/commit/b721b1798d8ea8cd3b902bd9c127efd5f4816dd9))
+* **greeting-card:** manage debounced preview lifecycle ([347c667](https://github.com/yehezkielgunawan/tools/commit/347c667b67b11081032f7ea51f201d9c6dd869c8))
+
 ## [1.7.0](https://github.com/yehezkielgunawan/tools/compare/v1.6.0...v1.7.0) (2026-09-30)
 
 
