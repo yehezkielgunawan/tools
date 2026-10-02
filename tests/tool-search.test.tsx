@@ -57,6 +57,25 @@ test('opens search from the homepage button and matches tool keywords', () => {
   ).toHaveAttribute('href', '/developer/json-formatter');
 });
 
+test('finds the greeting card generator by its occasions', () => {
+  renderApp();
+  fireEvent.click(screen.getByRole('button', { name: /search tools/i }));
+  const dialog = screen.getByRole('dialog', { name: /search tools/i });
+  for (const keyword of [
+    'birthday',
+    'congratulations',
+    'appreciation',
+    'thank you',
+  ]) {
+    fireEvent.change(within(dialog).getByRole('searchbox'), {
+      target: { value: keyword },
+    });
+    expect(
+      within(dialog).getByRole('link', { name: /greeting card generator/i }),
+    ).toHaveAttribute('href', '/generator/greeting-card');
+  }
+});
+
 test('opens search with Ctrl+K from a non-homepage route', () => {
   renderApp('/changelog');
 

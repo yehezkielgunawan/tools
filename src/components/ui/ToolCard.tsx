@@ -2,6 +2,7 @@ import {
   ArrowUpRight,
   Braces,
   FileText,
+  Gift,
   Image as ImageIcon,
   MessageCircle,
   QrCode,
@@ -17,6 +18,7 @@ const icons = {
   'message-circle': MessageCircle,
   'qr-code': QrCode,
   stamp: Stamp,
+  gift: Gift,
 } as const;
 
 interface ToolCardProps {
