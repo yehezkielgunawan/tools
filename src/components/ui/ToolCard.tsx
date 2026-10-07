@@ -4,6 +4,7 @@ import {
   FileText,
   Gift,
   Image as ImageIcon,
+  KeyRound,
   MessageCircle,
   QrCode,
   Stamp,
@@ -13,6 +14,7 @@ import type { ToolDefinition } from '../../tools/registry';
 
 const icons = {
   braces: Braces,
+  'key-round': KeyRound,
   image: ImageIcon,
   'file-text': FileText,
   'message-circle': MessageCircle,
