@@ -8,6 +8,7 @@ const WhatsAppLinkGenerator = lazy(() => import('../tools/whatsapp-link'));
 const QrCodeGenerator = lazy(() => import('../tools/qr-code'));
 const GreetingCardGenerator = lazy(() => import('../tools/greeting-card'));
 const JsonFormatter = lazy(() => import('../tools/json-formatter'));
+const KeyPairGenerator = lazy(() => import('../tools/key-pair-generator'));
 const ImageCompressor = lazy(() => import('../tools/image-compressor'));
 const ImageWatermark = lazy(() => import('../tools/image-watermark'));
 const PdfEditor = lazy(() => import('../tools/pdf-editor'));
@@ -39,6 +40,10 @@ export function AppRoutes() {
           path="/generator/greeting-card"
         />
         <Route element={<JsonFormatter />} path="/developer/json-formatter" />
+        <Route
+          element={<KeyPairGenerator />}
+          path="/developer/key-pair-generator"
+        />
         <Route element={<ImageCompressor />} path="/image/image-compressor" />
         <Route element={<ImageWatermark />} path="/image/image-watermark" />
         <Route element={<PdfEditor />} path="/pdf/pdf-editor" />

@@ -4,6 +4,7 @@ export type ToolIconName =
   | 'qr-code'
   | 'gift'
   | 'braces'
+  | 'key-round'
   | 'image'
   | 'stamp'
   | 'file-text';
@@ -74,6 +75,26 @@ export const tools = [
     category: 'developer',
     keywords: ['json', 'formatter', 'validator', 'developer'],
     icon: 'braces',
+  },
+  {
+    id: 'key-pair-generator',
+    name: 'Key Pair Generator',
+    description:
+      'Generate RSA and elliptic-curve public/private keys as PEM files locally in your browser.',
+    path: '/developer/key-pair-generator',
+    category: 'developer',
+    keywords: [
+      'rsa',
+      'ec',
+      'ecdsa',
+      'pem',
+      'public key',
+      'private key',
+      'key pair',
+      'pkcs8',
+      'spki',
+    ],
+    icon: 'key-round',
   },
   {
     id: 'image-compressor',

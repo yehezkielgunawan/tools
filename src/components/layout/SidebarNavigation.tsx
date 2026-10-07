@@ -5,6 +5,7 @@ import {
   Grid2X2,
   History,
   Image as ImageIcon,
+  KeyRound,
   MessageCircle,
   QrCode,
   Stamp,
@@ -21,6 +22,7 @@ interface SidebarNavigationProps {
 
 const icons = {
   braces: Braces,
+  'key-round': KeyRound,
   image: ImageIcon,
   'file-text': FileText,
   'message-circle': MessageCircle,
