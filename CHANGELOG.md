@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.0](https://github.com/yehezkielgunawan/tools/compare/v1.8.0...v1.9.0) (2026-10-07)
+
+
+### Features
+
+* key pair generator ([d1a72c5](https://github.com/yehezkielgunawan/tools/commit/d1a72c5179be39ae0bb780d43808158fb251f079))
+* **key-pair:** add generator interface and key downloads ([304b64d](https://github.com/yehezkielgunawan/tools/commit/304b64d958384f189adf2da6e7f382bfa98a9a69))
+* **key-pair:** add local key generation and PEM exports ([d4055a9](https://github.com/yehezkielgunawan/tools/commit/d4055a9fa40f311195c1ab8b11b6cfc00256b7c1))
+* **key-pair:** integrate tool routing and discovery ([2923bdf](https://github.com/yehezkielgunawan/tools/commit/2923bdf7887ff2ff70dfde362869fbc45df9ff13))
+
 ## [1.8.0](https://github.com/yehezkielgunawan/tools/compare/v1.7.0...v1.8.0) (2026-10-02)
 
 
