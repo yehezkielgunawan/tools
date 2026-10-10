@@ -125,4 +125,24 @@ export const tools = [
     keywords: ['pdf', 'editor', 'signature', 'sign', 'draw', 'text'],
     icon: 'file-text',
   },
+  {
+    id: 'pdf-merger',
+    name: 'PDF Merger',
+    description:
+      'Combine PDFs into one document in your chosen order, locally in your browser.',
+    path: '/pdf/pdf-merger',
+    category: 'pdf',
+    keywords: ['pdf', 'merge', 'merger', 'combine', 'join', 'pages'],
+    icon: 'file-text',
+  },
+  {
+    id: 'pdf-splitter',
+    name: 'PDF Splitter',
+    description:
+      'Extract selected pages or split a PDF into separate ranges, locally in your browser.',
+    path: '/pdf/pdf-splitter',
+    category: 'pdf',
+    keywords: ['pdf', 'split', 'splitter', 'extract', 'pages', 'range'],
+    icon: 'file-text',
+  },
 ] as const satisfies readonly ToolDefinition[];
