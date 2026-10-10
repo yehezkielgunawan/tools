@@ -49,13 +49,25 @@ export function usePdfWorkspace() {
 
   function publish(
     job: number,
-    files: { bytes: Uint8Array; filename: string; pageCount: number }[],
+    files: {
+      bytes: Uint8Array;
+      filename: string;
+      pageCount: number;
+      originalPages?: readonly number[];
+    }[],
   ) {
     if (!isCurrent(job)) return;
     const next: PdfOutput[] = [];
     try {
       for (const file of files)
-        next.push(createPdfOutput(file.bytes, file.filename, file.pageCount));
+        next.push(
+          createPdfOutput(
+            file.bytes,
+            file.filename,
+            file.pageCount,
+            file.originalPages,
+          ),
+        );
     } catch (error) {
       for (const output of next) URL.revokeObjectURL(output.url);
       throw error;

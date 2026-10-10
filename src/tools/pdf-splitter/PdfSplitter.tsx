@@ -1,6 +1,7 @@
-import { FileText, Plus, Trash2 } from 'lucide-react';
+import { Eye, FileText, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import ToolLayout from '../../components/layout/ToolLayout';
+import PdfPreviewPanel from '../pdf-shared/PdfPreviewPanel';
 import PdfResults from '../pdf-shared/PdfResults';
 import PdfUpload from '../pdf-shared/PdfUpload';
 import { parsePageSelection, parseSplitRanges } from '../pdf-shared/pageRanges';
@@ -12,6 +13,7 @@ import {
   MAX_SPLIT_OUTPUTS,
 } from '../pdf-shared/pdfFiles';
 import { splitPdf } from '../pdf-shared/pdfOperations';
+import { usePdfPreviewSelection } from '../pdf-shared/usePdfPreviewSelection';
 import { usePdfWorkspace } from '../pdf-shared/usePdfWorkspace';
 
 type SplitMode = 'extract' | 'ranges';
@@ -46,6 +48,9 @@ export default function PdfSplitter() {
   const [error, setError] = useState('');
   const [activity, setActivity] = useState('');
   const workspace = usePdfWorkspace();
+  const preview = usePdfPreviewSelection();
+  const [inspectedRange, setInspectedRange] = useState(0);
+  const rangeIndex = Math.min(inspectedRange, ranges.length - 1);
   const values =
     mode === 'extract' ? [selection] : ranges.map((range) => range.value);
   const validations = values.map((value) =>
@@ -67,6 +72,7 @@ export default function PdfSplitter() {
   const outputPages = groups.reduce((total, pages) => total + pages.length, 0);
 
   function invalidate() {
+    preview.clearOutput();
     workspace.invalidate();
     setError('');
   }
@@ -79,6 +85,7 @@ export default function PdfSplitter() {
       return;
     }
     const job = workspace.begin();
+    preview.clearOutput();
     setError('');
     setActivity('Reading PDF…');
     try {
@@ -87,6 +94,13 @@ export default function PdfSplitter() {
         setSelected(loaded);
         setSelection('');
         setRanges([{ id: crypto.randomUUID(), value: '' }]);
+        setInspectedRange(0);
+        preview.open({
+          id: loaded.id,
+          filename: loaded.file.name,
+          kind: 'source',
+          data: loaded.bytes,
+        });
       }
     } catch (error) {
       if (workspace.isCurrent(job))
@@ -100,6 +114,7 @@ export default function PdfSplitter() {
 
   async function generate() {
     if (!selected || !groups.length || workspace.busyRef.current) return;
+    preview.clearOutput();
     const job = workspace.begin();
     setError('');
     setActivity(mode === 'extract' ? 'Extracting pages…' : 'Splitting PDF…');
@@ -115,6 +130,7 @@ export default function PdfSplitter() {
               ? `${base}-extracted.pdf`
               : getSplitFilename(selected.file.name, groups[index], index + 1),
           pageCount: groups[index].length,
+          originalPages: groups[index],
         })),
       );
     } catch (error) {
@@ -140,6 +156,7 @@ export default function PdfSplitter() {
             className="btn btn-ghost btn-sm"
             onClick={() => {
               invalidate();
+              preview.close(false);
               setSelected(null);
               setSelection('');
               setRanges([{ id: crypto.randomUUID(), value: '' }]);
@@ -181,6 +198,25 @@ export default function PdfSplitter() {
                 {(selected.file.size / 1024 / 1024).toFixed(1)} MB
               </p>
             </div>
+            <button
+              aria-label={`Preview ${selected.file.name}`}
+              className="btn btn-sm ml-auto shrink-0"
+              onClick={(event) =>
+                preview.open(
+                  {
+                    id: selected.id,
+                    filename: selected.file.name,
+                    kind: 'source',
+                    data: selected.bytes,
+                  },
+                  event.currentTarget,
+                )
+              }
+              type="button"
+            >
+              <Eye aria-hidden="true" size={16} />
+              Preview
+            </button>
           </div>
         ) : null}
         <fieldset className="space-y-3" disabled={workspace.busy || !selected}>
@@ -398,7 +434,63 @@ export default function PdfSplitter() {
             Choose a PDF to select its pages.
           </p>
         )}
-        <PdfResults outputs={workspace.outputs} />
+        <PdfResults
+          outputs={workspace.outputs}
+          onPreview={(output, trigger) =>
+            preview.open(
+              {
+                id: output.url,
+                filename: output.filename,
+                kind: 'output',
+                data: output.blob,
+                originalPages: output.originalPages,
+              },
+              trigger,
+            )
+          }
+        />
+        {preview.source?.kind === 'source' && mode === 'ranges' ? (
+          <div className="space-y-2">
+            <label
+              className="block text-sm font-medium"
+              htmlFor="preview-range"
+            >
+              Range to inspect
+            </label>
+            <select
+              className="select w-full sm:w-64"
+              id="preview-range"
+              onChange={(event) =>
+                setInspectedRange(Number(event.currentTarget.value))
+              }
+              value={rangeIndex}
+            >
+              {ranges.map((range, index) => (
+                <option key={range.id} value={index}>
+                  Range {index + 1}
+                  {range.value ? ` · ${range.value}` : ''}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : null}
+        <PdfPreviewPanel
+          source={preview.source}
+          autoFocus={preview.autoFocus}
+          onClose={() => preview.close()}
+          describePage={
+            preview.source?.kind === 'source'
+              ? (number) => {
+                  const validation =
+                    validations[mode === 'extract' ? 0 : rangeIndex];
+                  if (!validation || validation.error || totalError)
+                    return 'Selection is invalid.';
+                  const included = validation.pages.includes(number);
+                  return `${included ? 'Included' : 'Not included'} in ${mode === 'extract' ? 'extraction' : `range ${rangeIndex + 1}`}.`;
+                }
+              : undefined
+          }
+        />
       </div>
     </ToolLayout>
   );

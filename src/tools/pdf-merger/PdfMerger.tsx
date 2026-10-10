@@ -1,6 +1,7 @@
-import { ArrowDown, ArrowUp, FileText, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Eye, FileText, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import ToolLayout from '../../components/layout/ToolLayout';
+import PdfPreviewPanel from '../pdf-shared/PdfPreviewPanel';
 import PdfResults from '../pdf-shared/PdfResults';
 import PdfUpload from '../pdf-shared/PdfUpload';
 import { getPdfFilename } from '../pdf-shared/pdfDownloads';
@@ -12,6 +13,7 @@ import {
   MAX_OUTPUT_PAGES,
 } from '../pdf-shared/pdfFiles';
 import { mergePdfs } from '../pdf-shared/pdfOperations';
+import { usePdfPreviewSelection } from '../pdf-shared/usePdfPreviewSelection';
 import { usePdfWorkspace } from '../pdf-shared/usePdfWorkspace';
 
 export default function PdfMerger() {
@@ -20,11 +22,13 @@ export default function PdfMerger() {
   const [errors, setErrors] = useState<string[]>([]);
   const [activity, setActivity] = useState('');
   const workspace = usePdfWorkspace();
+  const preview = usePdfPreviewSelection();
   const totalPages = files.reduce((total, file) => total + file.pageCount, 0);
   const totalBytes = files.reduce((total, file) => total + file.file.size, 0);
 
   async function addFiles(selected: File[]) {
     if (workspace.busyRef.current || !selected.length) return;
+    preview.clearOutput();
     const job = workspace.begin();
     setActivity('Reading PDFs…');
     setErrors([]);
@@ -58,6 +62,12 @@ export default function PdfMerger() {
   }
 
   function changeQueue(next: LoadedPdfFile[]) {
+    preview.clearOutput();
+    if (
+      preview.source?.kind === 'source' &&
+      !next.some((file) => file.id === preview.source?.id)
+    )
+      preview.close();
     workspace.invalidate();
     setFiles(next);
     setErrors([]);
@@ -74,6 +84,7 @@ export default function PdfMerger() {
 
   async function merge() {
     if (workspace.busyRef.current || files.length < 2) return;
+    preview.clearOutput();
     const job = workspace.begin();
     setActivity('Merging PDFs…');
     setErrors([]);
@@ -109,6 +120,7 @@ export default function PdfMerger() {
             className="btn btn-ghost btn-sm"
             onClick={() => {
               changeQueue([]);
+              preview.close(false);
               setFilename('merged.pdf');
             }}
             type="button"
@@ -153,7 +165,7 @@ export default function PdfMerger() {
                   className="flex flex-wrap items-center gap-3 p-3 sm:p-4"
                   key={file.id}
                 >
-                  <span className="w-6 text-center text-xs tabular-nums text-base-content/50">
+                  <span className="w-6 text-center text-xs tabular-nums text-base-content/70">
                     {String(index + 1).padStart(2, '0')}
                   </span>
                   <FileText
@@ -171,6 +183,24 @@ export default function PdfMerger() {
                     </p>
                   </div>
                   <div className="ml-auto flex gap-1">
+                    <button
+                      aria-label={`Preview ${file.file.name}`}
+                      className="btn btn-ghost btn-square btn-sm"
+                      onClick={(event) =>
+                        preview.open(
+                          {
+                            id: file.id,
+                            filename: file.file.name,
+                            kind: 'source',
+                            data: file.bytes,
+                          },
+                          event.currentTarget,
+                        )
+                      }
+                      type="button"
+                    >
+                      <Eye aria-hidden="true" size={16} />
+                    </button>
                     <button
                       aria-label={`Move ${file.file.name} up`}
                       className="btn btn-ghost btn-square btn-sm"
@@ -228,6 +258,7 @@ export default function PdfMerger() {
               id="merge-filename"
               onChange={(event) => {
                 workspace.invalidate();
+                preview.clearOutput();
                 setFilename(event.currentTarget.value);
               }}
               value={filename}
@@ -242,7 +273,30 @@ export default function PdfMerger() {
             Merge PDFs
           </button>
         </div>
-        <PdfResults outputs={workspace.outputs} />
+        <PdfResults
+          outputs={workspace.outputs}
+          onPreview={(output, trigger) =>
+            preview.open(
+              {
+                id: output.url,
+                filename: output.filename,
+                kind: 'output',
+                data: output.blob,
+              },
+              trigger,
+            )
+          }
+        />
+        <PdfPreviewPanel
+          source={preview.source}
+          autoFocus={preview.autoFocus}
+          onClose={() => preview.close()}
+          description={
+            preview.source?.kind === 'source'
+              ? `Document ${files.findIndex((file) => file.id === preview.source?.id) + 1} of ${files.length} in merge order.`
+              : undefined
+          }
+        />
       </div>
     </ToolLayout>
   );

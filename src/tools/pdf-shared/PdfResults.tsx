@@ -1,10 +1,12 @@
-import { Download } from 'lucide-react';
+import { Download, Eye } from 'lucide-react';
 import type { PdfOutput } from './pdfDownloads';
 
 export default function PdfResults({
   outputs,
+  onPreview,
 }: {
   outputs: readonly PdfOutput[];
+  onPreview?: (output: PdfOutput, trigger: HTMLButtonElement) => void;
 }) {
   if (!outputs.length) return null;
   return (
@@ -29,15 +31,28 @@ export default function PdfResults({
                 {output.pageCount} {output.pageCount === 1 ? 'page' : 'pages'}
               </p>
             </div>
-            <a
-              aria-label={`Download ${output.filename}`}
-              className="btn shrink-0"
-              download={output.filename}
-              href={output.url}
-            >
-              <Download aria-hidden="true" size={16} />
-              Download PDF
-            </a>
+            <div className="flex shrink-0 flex-wrap gap-2">
+              {onPreview ? (
+                <button
+                  aria-label={`Preview ${output.filename}`}
+                  className="btn"
+                  onClick={(event) => onPreview(output, event.currentTarget)}
+                  type="button"
+                >
+                  <Eye aria-hidden="true" size={16} />
+                  Preview
+                </button>
+              ) : null}
+              <a
+                aria-label={`Download ${output.filename}`}
+                className="btn shrink-0"
+                download={output.filename}
+                href={output.url}
+              >
+                <Download aria-hidden="true" size={16} />
+                Download
+              </a>
+            </div>
           </li>
         ))}
       </ul>

@@ -1,7 +1,9 @@
 export interface PdfOutput {
   url: string;
+  blob: Blob;
   filename: string;
   pageCount: number;
+  originalPages?: readonly number[];
 }
 
 export function getPdfFilename(value: string, fallback: string): string {
@@ -37,12 +39,14 @@ export function createPdfOutput(
   bytes: Uint8Array,
   filename: string,
   pageCount: number,
+  originalPages?: readonly number[],
 ): PdfOutput {
+  const blob = new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
   return {
-    url: URL.createObjectURL(
-      new Blob([new Uint8Array(bytes)], { type: 'application/pdf' }),
-    ),
+    url: URL.createObjectURL(blob),
+    blob,
     filename,
     pageCount,
+    originalPages,
   };
 }

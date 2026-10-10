@@ -1,5 +1,5 @@
 import { Upload } from 'lucide-react';
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 interface PdfUploadProps {
   multiple?: boolean;
@@ -14,6 +14,14 @@ export default function PdfUpload({
 }: PdfUploadProps) {
   const id = useId();
   const [dragging, setDragging] = useState(false);
+  const pickerRef = useRef<HTMLInputElement>(null);
+  const restorePickerFocus = useRef(false);
+  useEffect(() => {
+    if (!disabled && restorePickerFocus.current) {
+      restorePickerFocus.current = false;
+      if (document.activeElement === document.body) pickerRef.current?.focus();
+    }
+  }, [disabled]);
   return (
     <section
       aria-label="PDF upload"
@@ -56,10 +64,13 @@ export default function PdfUpload({
         id={id}
         multiple={multiple}
         onChange={(event) => {
+          restorePickerFocus.current =
+            document.activeElement === event.currentTarget;
           const files = Array.from(event.currentTarget.files ?? []);
           event.currentTarget.value = '';
           if (files.length) onFiles(files);
         }}
+        ref={pickerRef}
         type="file"
       />
     </section>
