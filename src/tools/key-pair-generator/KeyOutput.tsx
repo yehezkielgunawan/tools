@@ -18,6 +18,8 @@ export default function KeyOutput({
 }: KeyOutputProps) {
   const label = kind === 'public' ? 'Public key' : 'Private key';
   const Icon = kind === 'public' ? KeyRound : LockKeyhole;
+  const filename = kind === 'public' ? 'public-key.pub' : 'private-key.txt';
+  const permissionCommand = `chmod ${kind === 'public' ? '644' : '600'} ${filename}`;
 
   const download = (): void => {
     if (!value) return;
@@ -28,7 +30,7 @@ export default function KeyOutput({
         new Blob([value], { type: 'application/x-pem-file' }),
       );
       anchor.href = href;
-      anchor.download = `${kind}-key.pem`;
+      anchor.download = filename;
       document.body.append(anchor);
       anchor.click();
     } catch {
@@ -110,9 +112,31 @@ export default function KeyOutput({
       </div>
       <p className="text-xs leading-5 text-base-content/65">
         {kind === 'public'
-          ? 'Share this key with the application that needs it.'
+          ? 'Share this key with the application that needs it. The .pub file contains SPKI / PEM data, not OpenSSH format.'
           : 'Private key downloads are unencrypted. Keep this file secret.'}
       </p>
+      <div className="space-y-2 border-t border-base-300 pt-3">
+        <p className="text-xs leading-5 text-base-content/65">
+          Downloads as <span className="font-mono">{filename}</span>. Browsers
+          cannot set file permissions. After downloading, run this command in
+          the file’s folder on macOS or Linux. If you renamed the file, update
+          the command to match.
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <code className="break-all font-mono text-xs">
+            {permissionCommand}
+          </code>
+          <CopyButton
+            label="Copy permission command"
+            text={permissionCommand}
+          />
+        </div>
+        <p className="text-xs leading-5 text-base-content/65">
+          {kind === 'public'
+            ? '644 allows the owner to read and write; others can only read.'
+            : '600 allows only the owner to read and write. On Windows, use Properties → Security to restrict private-key access to your current user.'}
+        </p>
+      </div>
     </section>
   );
 }

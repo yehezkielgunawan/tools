@@ -112,14 +112,53 @@ test('downloads the matching PEM contents and releases download URLs', async () 
       screen.getByRole('button', { name: `Download ${kind} key` }),
     );
     const anchor = click.mock.instances.at(-1);
-    expect(anchor).toHaveProperty('download', `${kind}-key.pem`);
+    expect(anchor).toHaveProperty(
+      'download',
+      kind === 'public' ? 'public-key.pub' : 'private-key.txt',
+    );
     expect(anchor).toHaveProperty('href', 'blob:key-pair');
+    expect(anchor).toHaveProperty('isConnected', false);
     const blob = rs.mocked(URL.createObjectURL).mock.calls.at(-1)?.[0] as Blob;
     expect(await blob.text()).toBe(
       kind === 'public' ? pair.publicKey : pair.privateKey,
     );
   }
   expect(URL.revokeObjectURL).toHaveBeenCalledTimes(2);
+});
+
+test('cleans up a failed download and offers copying as a fallback', async () => {
+  rs.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {
+    throw new Error('Download failed');
+  });
+  renderTool();
+  await generate();
+  fireEvent.click(screen.getByRole('button', { name: 'Download private key' }));
+  expect(screen.getByRole('alert')).toHaveTextContent(
+    'Could not download the key. Try copying it instead.',
+  );
+  expect(document.querySelector('a[download]')).toBeNull();
+  expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:key-pair');
+  expect(screen.queryByDisplayValue(pair.privateKey)).not.toBeInTheDocument();
+});
+
+test('copies permission commands independently from key contents', async () => {
+  const writeText = rs.fn().mockResolvedValue(undefined);
+  rs.stubGlobal('navigator', { clipboard: { writeText } });
+  renderTool();
+  for (const kind of ['public', 'private'] as const) {
+    const panel = screen.getByRole('region', {
+      name: `${kind === 'public' ? 'Public' : 'Private'} key`,
+    });
+    const command =
+      kind === 'public'
+        ? 'chmod 644 public-key.pub'
+        : 'chmod 600 private-key.txt';
+    fireEvent.click(
+      within(panel).getByRole('button', { name: 'Copy permission command' }),
+    );
+    await within(panel).findByRole('button', { name: 'Copied' });
+    expect(writeText).toHaveBeenLastCalledWith(command);
+  }
 });
 
 test('keeps generated settings accurate when selectors change', async () => {
