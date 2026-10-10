@@ -3,9 +3,10 @@ import { useClipboard } from '../../hooks/useClipboard';
 
 interface CopyButtonProps {
   text: string;
+  label?: string;
 }
 
-export default function CopyButton({ text }: CopyButtonProps) {
+export default function CopyButton({ text, label = 'Copy' }: CopyButtonProps) {
   const { copied, error, copy } = useClipboard();
 
   return (
@@ -21,7 +22,7 @@ export default function CopyButton({ text }: CopyButtonProps) {
         ) : (
           <Copy aria-hidden="true" size={15} />
         )}
-        {copied ? 'Copied' : 'Copy'}
+        {copied ? 'Copied' : label}
       </button>
       {error ? (
         <span className="text-right text-xs text-error" role="alert">
