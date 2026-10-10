@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.10.0](https://github.com/yehezkielgunawan/tools/compare/v1.9.0...v1.10.0) (2026-10-10)
+
+
+### Features
+
+* **key-pair:** improve download filenames and permission guidance ([0e361b1](https://github.com/yehezkielgunawan/tools/commit/0e361b1f3b697d0857661491b273d66b62268ecd))
+* **key-pair:** offer private key PEM downloads ([ed9aada](https://github.com/yehezkielgunawan/tools/commit/ed9aada6e31dc4853d9cebc23d56b1933e108ab1))
+* **ui:** support custom copy button labels ([1e4f457](https://github.com/yehezkielgunawan/tools/commit/1e4f457243114c07c018175209153cdc028da6ad))
+
+
+### Bug Fixes
+
+* Enable Download as txt, pub, and pem ([785a391](https://github.com/yehezkielgunawan/tools/commit/785a3918d93cb50d2218c8ad5c9630c5117e6490))
+
 ## [1.9.0](https://github.com/yehezkielgunawan/tools/compare/v1.8.0...v1.9.0) (2026-10-07)
 
 
