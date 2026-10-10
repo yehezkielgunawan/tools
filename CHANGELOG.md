@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.11.0](https://github.com/yehezkielgunawan/tools/compare/v1.10.0...v1.11.0) (2026-10-10)
+
+
+### Features
+
+* pdf merger splitter ([4150e17](https://github.com/yehezkielgunawan/tools/commit/4150e174ade259f287bf67c34ced483a6d38a728))
+* **pdf:** add merger interface and ordered downloads ([5694c05](https://github.com/yehezkielgunawan/tools/commit/5694c051283d0a8809800c1be0f37e4800fb7eee))
+* **pdf:** add shared local processing and download utilities ([5ce68df](https://github.com/yehezkielgunawan/tools/commit/5ce68dfb609ae318851ef579e86de6d3512733bb))
+* **pdf:** add splitter with extraction and range outputs ([8e359f2](https://github.com/yehezkielgunawan/tools/commit/8e359f2bb11dec16e1baa7ce88ad07dd27d37cdc))
+* **pdf:** integrate merger and splitter routing and discovery ([da6d4b6](https://github.com/yehezkielgunawan/tools/commit/da6d4b659c6af49f9d5cf28136cc7e481bf19616))
+
 ## [1.10.0](https://github.com/yehezkielgunawan/tools/compare/v1.9.0...v1.10.0) (2026-10-10)
 
 
