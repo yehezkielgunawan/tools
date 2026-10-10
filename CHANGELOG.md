@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/yehezkielgunawan/tools/compare/v1.11.0...v1.11.1) (2026-10-10)
+
+
+### Bug Fixes
+
+* pdf preview accessibility ([374bf65](https://github.com/yehezkielgunawan/tools/commit/374bf65fe7e28d9bab755f4e5c4f40f673747cd5))
+
 ## [1.11.0](https://github.com/yehezkielgunawan/tools/compare/v1.10.0...v1.11.0) (2026-10-10)
 
 
