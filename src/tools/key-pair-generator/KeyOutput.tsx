@@ -21,7 +21,7 @@ export default function KeyOutput({
   const filename = kind === 'public' ? 'public-key.pub' : 'private-key.txt';
   const permissionCommand = `chmod ${kind === 'public' ? '644' : '600'} ${filename}`;
 
-  const download = (): void => {
+  const download = (downloadName = filename): void => {
     if (!value) return;
     let href: string | undefined;
     const anchor = document.createElement('a');
@@ -30,7 +30,7 @@ export default function KeyOutput({
         new Blob([value], { type: 'application/x-pem-file' }),
       );
       anchor.href = href;
-      anchor.download = filename;
+      anchor.download = downloadName;
       document.body.append(anchor);
       anchor.click();
     } catch {
@@ -87,12 +87,23 @@ export default function KeyOutput({
         <button
           className="btn btn-sm"
           disabled={!value}
-          onClick={download}
+          onClick={() => download()}
           type="button"
         >
           <Download aria-hidden="true" size={15} />
-          Download {kind} key
+          Download {kind} key{kind === 'private' ? ' (.txt)' : ''}
         </button>
+        {kind === 'private' ? (
+          <button
+            className="btn btn-sm"
+            disabled={!value}
+            onClick={() => download('private-key.pem')}
+            type="button"
+          >
+            <Download aria-hidden="true" size={15} />
+            Download private key (.pem)
+          </button>
+        ) : null}
         {kind === 'private' ? (
           <button
             aria-expanded={visible}
@@ -117,10 +128,13 @@ export default function KeyOutput({
       </p>
       <div className="space-y-2 border-t border-base-300 pt-3">
         <p className="text-xs leading-5 text-base-content/65">
-          Downloads as <span className="font-mono">{filename}</span>. Browsers
-          cannot set file permissions. After downloading, run this command in
-          the file’s folder on macOS or Linux. If you renamed the file, update
-          the command to match.
+          Downloads as <span className="font-mono">{filename}</span>
+          {kind === 'private'
+            ? ' or private-key.pem, both containing PKCS#8 / PEM data'
+            : ''}
+          . Browsers cannot set file permissions. After downloading, run the
+          matching command in the file’s folder on macOS or Linux. If you
+          renamed the file, update the command to match.
         </p>
         <div className="flex flex-wrap items-center gap-2">
           <code className="break-all font-mono text-xs">
@@ -131,6 +145,17 @@ export default function KeyOutput({
             text={permissionCommand}
           />
         </div>
+        {kind === 'private' ? (
+          <div className="flex flex-wrap items-center gap-2">
+            <code className="break-all font-mono text-xs">
+              chmod 600 private-key.pem
+            </code>
+            <CopyButton
+              label="Copy PEM permission command"
+              text="chmod 600 private-key.pem"
+            />
+          </div>
+        ) : null}
         <p className="text-xs leading-5 text-base-content/65">
           {kind === 'public'
             ? '644 allows the owner to read and write; others can only read.'
