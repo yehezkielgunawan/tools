@@ -48,6 +48,8 @@ pnpm run preview
 - `/generator/invoice` - local invoice editor with autosaved drafts, PDF downloads, and read-only share links
 - `/developer/json-formatter` - JSON formatter
 - `/pdf/pdf-editor` - local PDF editor for text, pen, and drawn signatures
+- `/pdf/pdf-images` - convert PDF pages to PNG/JPEG, or assemble images into a PDF
+- `/image/powerpoint-images` - convert PPTX slides to PNG/JPEG, or assemble images into a PowerPoint deck
 - `/changelog` - release history and notable changes
 
 Unknown routes show a 404 page. Tool modules are lazy-loaded so new tools do not need to be included in the initial route bundle.
@@ -88,6 +90,21 @@ The Greeting Card Generator sends card text and design settings to `https://og-i
 The Invoice Generator calculates totals and generates PDFs locally. It autosaves one draft in LocalStorage on the current browser. **Clear saved invoice data** removes this tool's draft and resets the editor without changing other tools' storage. A shared invoice is a snapshot encoded in the URL fragment, which is not sent to the server. Anyone with the complete link can read its contents; clearing the local draft does not revoke previously shared links. Shared views do not overwrite the local draft unless **Make a copy** is chosen and replacement is confirmed.
 
 Invoices support up to 100 line items, fractional quantities, an invoice-wide fixed discount applied before tax, and a single tax percentage. Share URLs are limited to 8,000 characters; larger invoices can still be downloaded as PDFs. PDF export uses locally bundled Noto Sans fonts for Latin, Greek, and Cyrillic text and reports unsupported characters instead of dropping them. The live preview supports browser text rendering and may display characters that the PDF font does not support.
+
+## PDF and PowerPoint ↔ Images
+
+Both converters process files in the browser without uploads, external media requests, or third-party font requests. Files and results are kept in memory for the current tab; clearing the tool or leaving it releases its previews and downloads.
+
+- **Document to images:** select all pages/slides or enter ranges such as `1-3, 5`. Choose PNG or JPEG and a longest edge of 1024, 1600, 2048, or 3072 pixels. Download individual images or prepare a ZIP. PDF rotation and source aspect ratios are preserved. Image exports use a white background.
+- **Images to PDF:** add JPEG/PNG images, reorder them, and create one page per image. Choose A4, US Letter, or proportional image-sized pages, with orientation, margins, and fit/crop controls. Transparent images are placed on white pages.
+- **Images to PowerPoint:** create one image per slide in a 16:9 or 4:3 PPTX, with fit/crop controls and white slide backgrounds. Text remains part of each image rather than becoming editable PowerPoint text.
+- **PPTX rendering:** static and best-effort. Missing fonts use local fallbacks. Complex layouts, charts, SmartArt, and effects may differ or be omitted; animations, video playback, and legacy `.ppt` imports are not supported. Review the rendered previews before downloading.
+
+Limits: 32 MiB per document, 50 selected output pages/slides or input images, 64 MiB combined image inputs, and 128 MiB retained results. Image inputs also follow the existing 24-megapixel validation limit and are normalized to a maximum 3072-pixel edge when creating documents. PPTX archives are limited to 4096 entries, 32 MiB per expanded entry, and 128 MiB total expanded data. Cancellation takes effect at the next supported processing boundary; ZIP creation and active PDF renders are interruptible.
+
+PowerPoint import requires a modern browser with `DecompressionStream('deflate-raw')` support. The converters work offline after the production service worker has cached the app and conversion assets.
+
+The pinned PowerPoint dependencies have reproducible pnpm patches in `patches/`. The `pptx-browser` patch disables automatic Google Fonts loading, bounds archive expansion, fixes text color/run handling, and releases image URLs. The `pptxgenjs` patch removes `node:` prefixes from optional server imports so its existing browser exclusions work in the production bundler. Recheck these patches and `tests/pptx-local-renderer.test.ts` when upgrading either package.
 
 ## Progressive Web App
 

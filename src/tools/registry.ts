@@ -136,6 +136,45 @@ export const tools = [
     icon: 'file-text',
   },
   {
+    id: 'pdf-images',
+    name: 'PDF ↔ Images',
+    description:
+      'Convert PDF pages to PNG or JPEG, or combine images into a PDF, locally in your browser.',
+    path: '/pdf/pdf-images',
+    category: 'pdf',
+    keywords: [
+      'pdf',
+      'images',
+      'png',
+      'jpeg',
+      'jpg',
+      'converter',
+      'pages',
+      'zip',
+    ],
+    icon: 'file-text',
+  },
+  {
+    id: 'powerpoint-images',
+    name: 'PowerPoint ↔ Images',
+    description:
+      'Export PPTX slides as images or turn images into a PowerPoint presentation, locally in your browser.',
+    path: '/image/powerpoint-images',
+    category: 'image',
+    keywords: [
+      'powerpoint',
+      'pptx',
+      'ppt',
+      'slides',
+      'images',
+      'png',
+      'jpeg',
+      'converter',
+      'presentation',
+    ],
+    icon: 'image',
+  },
+  {
     id: 'pdf-merger',
     name: 'PDF Merger',
     description:
