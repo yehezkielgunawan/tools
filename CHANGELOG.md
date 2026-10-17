@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.13.0](https://github.com/yehezkielgunawan/tools/compare/v1.12.0...v1.13.0) (2026-10-17)
+
+
+### Features
+
+* **converter:** add bounded PDF and PPTX conversion engines ([9f64001](https://github.com/yehezkielgunawan/tools/commit/9f64001eb48e04e576acd16401121683a4b4cbfa))
+* **converter:** add browser-only PDF and PowerPoint image converters ([11ccf6b](https://github.com/yehezkielgunawan/tools/commit/11ccf6be115fba062f8ebba6debe1c0292bcf429))
+* **converter:** integrate bidirectional document image tools ([e5c5c20](https://github.com/yehezkielgunawan/tools/commit/e5c5c204b118c511739202a9a2bd22cec987364c))
+* **converter:** manage cancellable jobs and download lifecycles ([c0d8be6](https://github.com/yehezkielgunawan/tools/commit/c0d8be61c08dc6d0f659a47489e1f38de1222779))
+
+
+### Bug Fixes
+
+* **converter:** handle decompression stream failures ([8ade55f](https://github.com/yehezkielgunawan/tools/commit/8ade55f676d5c4e0ef110e2619ab4ffb6b22e9b6))
+
 ## [1.12.0](https://github.com/yehezkielgunawan/tools/compare/v1.11.1...v1.12.0) (2026-10-17)
 
 
