@@ -1,5 +1,11 @@
 import { expect, test } from '@rstest/core';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { lazy, Suspense } from 'react';
 import { Link, MemoryRouter, Route, Routes } from 'react-router';
 import { ThemeProvider } from '../src/app/ThemeProvider';
@@ -244,7 +250,7 @@ test('waits for a lazy route heading before moving focus', async () => {
   );
   fireEvent.click(screen.getByRole('link', { name: 'Open deferred page' }));
   resolvePage({ default: () => <h1>Deferred page</h1> });
-  expect(
-    await screen.findByRole('heading', { name: 'Deferred page' }),
-  ).toHaveFocus();
+  const heading = await screen.findByRole('heading', { name: 'Deferred page' });
+  // The heading can mount before the route's MutationObserver moves focus.
+  await waitFor(() => expect(heading).toHaveFocus());
 });
