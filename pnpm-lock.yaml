@@ -163,7 +163,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  pptx-browser@4.1.5: 12f64905a0dfed641cdcc3ec51d68f5b7b03723e5c8b4b4c1e66bf66f7df01e0
+  pptx-browser@4.1.5: 85b6807bd5e2e12ef3919b146a27c82ec99eca993035c50e7670b6102c94aee8
   pptxgenjs@4.0.1: 4a6e1f65eedcbfbb259e2bc7be5be08f20f65a021bee9077edbd52c02f5c1792
 
 importers:
@@ -193,7 +193,7 @@ importers:
         version: 6.3.289
       pptx-browser:
         specifier: 4.1.5
-        version: 4.1.5(patch_hash=12f64905a0dfed641cdcc3ec51d68f5b7b03723e5c8b4b4c1e66bf66f7df01e0)
+        version: 4.1.5(patch_hash=85b6807bd5e2e12ef3919b146a27c82ec99eca993035c50e7670b6102c94aee8)
       pptxgenjs:
         specifier: 4.0.1
         version: 4.0.1(patch_hash=4a6e1f65eedcbfbb259e2bc7be5be08f20f65a021bee9077edbd52c02f5c1792)
@@ -5627,7 +5627,7 @@ snapshots:
 
   possible-typed-array-names@1.1.0: {}
 
-  pptx-browser@4.1.5(patch_hash=12f64905a0dfed641cdcc3ec51d68f5b7b03723e5c8b4b4c1e66bf66f7df01e0): {}
+  pptx-browser@4.1.5(patch_hash=85b6807bd5e2e12ef3919b146a27c82ec99eca993035c50e7670b6102c94aee8): {}
 
   pptxgenjs@4.0.1(patch_hash=4a6e1f65eedcbfbb259e2bc7be5be08f20f65a021bee9077edbd52c02f5c1792):
     dependencies:

@@ -47,7 +47,7 @@ index 8d0e215b7823cb7fa8ae1c0b6f2d5d6e8dd6bdac..e16cde534bc8dbfdeb6896715ab74cf6
          // Superscript / subscript: smaller font + vertical offset
          let drawY = baseline;
 diff --git a/src/zip.js b/src/zip.js
-index 91e82b19da3fc6ddeac8ec93b80d112a05f91144..f710a60de6e10c04d396a4793e2f680489860c23 100644
+index 91e82b19da3fc6ddeac8ec93b80d112a05f91144..03f59365bc2927635e73ec0d5e34fdea698e2dd0 100644
 --- a/src/zip.js
 +++ b/src/zip.js
 @@ -55,6 +55,7 @@ export async function readZip(input) {
@@ -87,7 +87,28 @@ index 91e82b19da3fc6ddeac8ec93b80d112a05f91144..f710a60de6e10c04d396a4793e2f6804
      }
    }
  
-@@ -145,6 +153,10 @@ async function inflateRaw(compData) {
+@@ -131,11 +139,15 @@ export async function readZip(input) {
+  */
+ async function inflateRaw(compData) {
+   const ds     = new DecompressionStream('deflate-raw');
+-  const writer = ds.writable.getWriter();
+-  const reader = ds.readable.getReader();
+-
+-  writer.write(compData);
+-  writer.close();
++  // pipeThrough observes producer failures and propagates reader cancellation.
++  // Fire-and-forget writer.write()/close() leak rejections on corrupt/oversized data.
++  const input = new ReadableStream({
++    start(controller) {
++      controller.enqueue(compData);
++      controller.close();
++    },
++  });
++  const reader = input.pipeThrough(ds).getReader();
+ 
+   const chunks = [];
+   let totalLen = 0;
+@@ -145,6 +157,10 @@ async function inflateRaw(compData) {
      if (done) break;
      chunks.push(value);
      totalLen += value.length;

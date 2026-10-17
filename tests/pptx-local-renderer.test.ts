@@ -3,6 +3,37 @@ import { strToU8, zipSync } from 'fflate';
 import { PptxRenderer } from 'pptx-browser';
 
 describe('local PPTX renderer dependency patch', () => {
+  it('rejects corrupt compressed data without unhandled stream rejections', async () => {
+    const archive = zipSync({
+      'ppt/presentation.xml': strToU8('<presentation/>'.repeat(100)),
+    });
+    const view = new DataView(
+      archive.buffer,
+      archive.byteOffset,
+      archive.byteLength,
+    );
+    const dataStart = 30 + view.getUint16(26, true) + view.getUint16(28, true);
+    // DEFLATE block type 3 is reserved and must fail during decompression.
+    archive[dataStart] = 0x07;
+    const unhandled: unknown[] = [];
+    const onUnhandled = (reason: unknown) => {
+      unhandled.push(reason);
+    };
+    process.on('unhandledRejection', onUnhandled);
+    const renderer = new PptxRenderer();
+    try {
+      await expect(renderer.load(archive)).rejects.toThrow(
+        /Could not decompress/,
+      );
+      // Rejections are reported on the following event-loop turn.
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(unhandled).toEqual([]);
+    } finally {
+      renderer.destroy();
+      process.removeListener('unhandledRejection', onUnhandled);
+    }
+  });
+
   it('bounds actual decompression even when the ZIP directory understates its size', async () => {
     const archive = zipSync({
       'ppt/presentation.xml': new Uint8Array(33 * 1024 * 1024),
