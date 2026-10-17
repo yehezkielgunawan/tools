@@ -15,6 +15,8 @@ const ImageWatermark = lazy(() => import('../tools/image-watermark'));
 const PdfEditor = lazy(() => import('../tools/pdf-editor'));
 const PdfMerger = lazy(() => import('../tools/pdf-merger'));
 const PdfSplitter = lazy(() => import('../tools/pdf-splitter'));
+const PdfImages = lazy(() => import('../tools/pdf-images'));
+const PowerPointImages = lazy(() => import('../tools/powerpoint-images'));
 
 function ToolLoading() {
   return (
@@ -53,6 +55,8 @@ export function AppRoutes() {
         <Route element={<PdfEditor />} path="/pdf/pdf-editor" />
         <Route element={<PdfMerger />} path="/pdf/pdf-merger" />
         <Route element={<PdfSplitter />} path="/pdf/pdf-splitter" />
+        <Route element={<PdfImages />} path="/pdf/pdf-images" />
+        <Route element={<PowerPointImages />} path="/image/powerpoint-images" />
         <Route element={<ChangelogPage />} path="/changelog" />
         <Route element={<NotFoundPage />} path="*" />
       </Routes>

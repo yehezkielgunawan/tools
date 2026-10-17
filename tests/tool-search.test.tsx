@@ -173,7 +173,9 @@ test('moves through search results with arrow keys and opens the focused result 
   });
   fireEvent.change(searchInput, { target: { value: 'image' } });
 
-  const [firstResult, secondResult] = within(dialog).getAllByRole('link');
+  const results = within(dialog).getAllByRole('link');
+  const [firstResult, secondResult] = results;
+  const lastResult = results[results.length - 1];
   if (!firstResult || !secondResult) {
     throw new Error('Expected two image tool results');
   }
@@ -185,6 +187,10 @@ test('moves through search results with arrow keys and opens the focused result 
   fireEvent.keyDown(secondResult, { key: 'ArrowUp' });
   expect(firstResult).toHaveFocus();
   fireEvent.keyDown(firstResult, { key: 'ArrowUp' });
+  expect(lastResult).toHaveFocus();
+  fireEvent.keyDown(lastResult, { key: 'ArrowDown' });
+  expect(firstResult).toHaveFocus();
+  fireEvent.keyDown(firstResult, { key: 'ArrowDown' });
   expect(secondResult).toHaveFocus();
   fireEvent.keyDown(secondResult, { key: 'Enter' });
 
