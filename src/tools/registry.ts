@@ -31,6 +31,16 @@ export const toolCategories = [
 
 export const tools = [
   {
+    id: 'invoice',
+    name: 'Invoice Generator',
+    description:
+      'Create invoices locally, download PDFs, and share read-only invoice links.',
+    path: '/generator/invoice',
+    category: 'generator',
+    keywords: ['invoice', 'billing', 'payment', 'tax', 'pdf', 'receipt'],
+    icon: 'file-text',
+  },
+  {
     id: 'whatsapp-link',
     name: 'WhatsApp Link Generator',
     description: 'Create a ready-to-share wa.me link with an optional message.',
