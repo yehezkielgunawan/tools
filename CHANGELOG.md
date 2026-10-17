@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.12.0](https://github.com/yehezkielgunawan/tools/compare/v1.11.1...v1.12.0) (2026-10-17)
+
+
+### Features
+
+* **invoice:** add draft persistence and versioned share snapshots ([d62adc5](https://github.com/yehezkielgunawan/tools/commit/d62adc501c87cdb3201653a6ae73a711ce3f5eef))
+* **invoice:** add local invoice generator with PDF export and sharing ([4a4ba03](https://github.com/yehezkielgunawan/tools/commit/4a4ba039d45edd93d6de3ca6a80e4685abe94e50))
+* **invoice:** add validated model and exact monetary calculations ([60600e9](https://github.com/yehezkielgunawan/tools/commit/60600e906ef7f2d8bee8ec470c3e29a4f4bc3e77))
+* **invoice:** generate paginated PDFs with embedded local fonts ([cafe9b7](https://github.com/yehezkielgunawan/tools/commit/cafe9b79c3ef52a3d892079fa9a6b38f59c0b912))
+* **invoice:** integrate editor, live preview, and read-only sharing ([12b4c50](https://github.com/yehezkielgunawan/tools/commit/12b4c50c9b6de1bd1be24d678d7114e72e275ac5))
+
 ## [1.11.1](https://github.com/yehezkielgunawan/tools/compare/v1.11.0...v1.11.1) (2026-10-10)
 
 
