@@ -1,0 +1,100 @@
+diff --git a/src/index.js b/src/index.js
+index eddc206af12a1fbf1204a3509199bf0d8b12dc73..649f6a6b07d9dfb4aa01aa2f03f7c8f1e5b75270 100644
+--- a/src/index.js
++++ b/src/index.js
+@@ -203,7 +203,8 @@ export default class PptxRenderer {
+ 
+     // Load Google Font substitutes for MS fonts used in this slide
+     const usedFonts = collectUsedFonts([slideDoc, layoutDoc, this.masterDoc]);
+-    await loadGoogleFontsFor(usedFonts, this.themeData);
++    // Local-only conversion: never send document font names to Google Fonts.
++    // Canvas uses installed fonts and its generic family fallbacks instead.
+ 
+     // Canvas setup
+     const scale  = width / this.slideSize.cx;
+diff --git a/src/render.js b/src/render.js
+index 8d0e215b7823cb7fa8ae1c0b6f2d5d6e8dd6bdac..e16cde534bc8dbfdeb6896715ab74cf640cf99ca 100644
+--- a/src/render.js
++++ b/src/render.js
+@@ -299,8 +299,8 @@ export async function loadImages(files, rels) {
+       const url = URL.createObjectURL(blob);
+       const img = await new Promise((resolve, reject) => {
+         const image = new Image();
+-        image.onload = () => resolve(image);
+-        image.onerror = () => resolve(null);
++        image.onload = () => { URL.revokeObjectURL(url); resolve(image); };
++        image.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+         image.src = url;
+       });
+       cache[rId] = img;
+@@ -597,7 +597,7 @@ export async function renderTextBody(ctx, txBody, bx, by, bw, bh, scale, themeCo
+     const indent = attrInt(pPr, 'indent', 0) * scale;
+ 
+     // ── Bullet / list marker ─────────────────────────────────────────────────
+-    const bullet = pPr ? parseBullet(pPr, defRPr, themeColors, themeData) : null;
++    const bullet = pPr ? parseBullet(pPr, g1(pPr, 'defRPr'), themeColors, themeData) : null;
+ 
+     // Spacing
+     const spcBef = g1(pPr, 'spcBef');
+@@ -869,7 +869,8 @@ export async function renderTextBody(ctx, txBody, bx, by, bw, bh, scale, themeCo
+       // ── Draw each run ──────────────────────────────────────────────────────
+       for (const run of runs) {
+         const c = run.color;
+-        ctx.fillStyle = c ? colorToCss(c) : '#000000';
++        // getRunColorInherited already returns a CSS color string.
++        ctx.fillStyle = c || '#000000';
+ 
+         // Superscript / subscript: smaller font + vertical offset
+         let drawY = baseline;
+diff --git a/src/zip.js b/src/zip.js
+index 91e82b19da3fc6ddeac8ec93b80d112a05f91144..f710a60de6e10c04d396a4793e2f680489860c23 100644
+--- a/src/zip.js
++++ b/src/zip.js
+@@ -55,6 +55,7 @@ export async function readZip(input) {
+     cdCount  = view.getUint16(eocdOff +  8, true);
+   }
+ 
++  if (cdCount > 4096) throw new Error('This PPTX contains too many archive entries (maximum 4096).');
+   if (cdOffset + 4 > data.length) {
+     throw new Error('ZIP central directory offset is outside the file');
+   }
+@@ -63,6 +64,7 @@ export async function readZip(input) {
+   const CD_SIG = 0x02014b50;
+   const files  = {};
+   let pos = cdOffset;
++  let totalBytes = 0;
+ 
+   for (let i = 0; i < cdCount; i++) {
+     if (pos + 46 > data.length) break;
+@@ -111,12 +113,18 @@ export async function readZip(input) {
+ 
+     const compData = data.subarray(dataStart, dataStart + compSize);
+ 
++    if (uncompSize > 32 * 1024 * 1024 || totalBytes + uncompSize > 128 * 1024 * 1024) {
++      throw new Error('This PPTX exceeds the 128 MiB expanded archive limit or 32 MiB per-entry limit.');
++    }
+     try {
+-      files[name] = method === 0
++      const output = method === 0
+         ? compData.slice()                      // STORED
+         : await inflateRaw(compData);           // DEFLATE
++      totalBytes += output.length;
++      if (totalBytes > 128 * 1024 * 1024) throw new Error('PPTX expanded archive limit exceeded.');
++      files[name] = output;
+     } catch (e) {
+-      console.warn(`[zip.js] Failed to decompress "${name}":`, e.message);
++      throw new Error(`Could not decompress PPTX entry "${name}": ${e.message}`);
+     }
+   }
+ 
+@@ -145,6 +153,10 @@ async function inflateRaw(compData) {
+     if (done) break;
+     chunks.push(value);
+     totalLen += value.length;
++    if (totalLen > 32 * 1024 * 1024) {
++      await reader.cancel();
++      throw new Error('PPTX entry exceeds the 32 MiB expanded limit.');
++    }
+   }
+ 
+   // Concatenate all output chunks into a single typed array

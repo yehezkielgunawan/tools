@@ -1,0 +1,24 @@
+diff --git a/dist/pptxgen.es.js b/dist/pptxgen.es.js
+index 449038cbf3d367c7e5a51bf692793a25bd06a86e..b5c20e96158c3f8f6c2c939cb3b90a654faecdc3 100644
+--- a/dist/pptxgen.es.js
++++ b/dist/pptxgen.es.js
+@@ -4839,8 +4839,8 @@ function encodeSlideMediaRels(layout) {
+     // STEP 2: Lazy-load Node built-ins if needed
+     const loadNodeDeps = isNode
+         ? () => __awaiter(this, void 0, void 0, function* () {
+-            ({ default: fs } = yield import('node:fs'));
+-            ({ default: https } = yield import('node:https'));
++            ({ default: fs } = yield import('fs'));
++            ({ default: https } = yield import('https'));
+         })
+         : () => __awaiter(this, void 0, void 0, function* () { });
+     // Immediately start it when we know we’re in Node
+@@ -7202,7 +7202,7 @@ class PptxGenJS {
+             // STEP 4: Write the file out
+             if (isNode) {
+                 // Dynamically import to avoid bundling fs in the browser build
+-                const { promises: fs } = yield import('node:fs');
++                const { promises: fs } = yield import('fs');
+                 const { writeFile } = fs;
+                 yield writeFile(fileName, data);
+                 return fileName;
