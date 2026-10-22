@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.14.0](https://github.com/yehezkielgunawan/tools/compare/v1.13.0...v1.14.0) (2026-10-22)
+
+
+### Features
+
+* **developer:** add converters and JSON tree viewer ([30dbfc1](https://github.com/yehezkielgunawan/tools/commit/30dbfc1ea6f338c25a7a315b5bea2ce2c1c4cb98))
+* **developer:** add converters and JSON tree viewer ([1253127](https://github.com/yehezkielgunawan/tools/commit/1253127f24c0afdd2d48a73a7d871fda3ce476c1)), closes [#31](https://github.com/yehezkielgunawan/tools/issues/31)
+
 ## [1.13.0](https://github.com/yehezkielgunawan/tools/compare/v1.12.0...v1.13.0) (2026-10-17)
 
 
