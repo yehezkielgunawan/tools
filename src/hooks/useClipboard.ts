@@ -20,7 +20,7 @@ export function useClipboard(): ClipboardState {
   }, []);
 
   const copy = async (text: string): Promise<boolean> => {
-    if (!text.trim()) {
+    if (!text) {
       setError('Nothing to copy.');
       return false;
     }

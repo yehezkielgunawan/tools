@@ -13,7 +13,7 @@ export default function CopyButton({ text, label = 'Copy' }: CopyButtonProps) {
     <div className="flex flex-col items-end gap-1">
       <button
         className="btn btn-ghost btn-sm"
-        disabled={!text.trim()}
+        disabled={!text}
         onClick={() => void copy(text)}
         type="button"
       >

@@ -42,3 +42,16 @@ test('disables copying when there is no text', () => {
 
   expect(screen.getByRole('button', { name: /copy/i })).toBeDisabled();
 });
+
+test('copies whitespace-only output without trimming it', async () => {
+  let copiedValue = '';
+  setClipboard(async (value) => {
+    copiedValue = value;
+  });
+  render(<CopyButton text={' \n '} />);
+  fireEvent.click(screen.getByRole('button', { name: /copy/i }));
+  expect(
+    await screen.findByRole('button', { name: /copied/i }),
+  ).toBeInTheDocument();
+  expect(copiedValue).toBe(' \n ');
+});

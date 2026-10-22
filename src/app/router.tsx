@@ -9,6 +9,8 @@ const QrCodeGenerator = lazy(() => import('../tools/qr-code'));
 const GreetingCardGenerator = lazy(() => import('../tools/greeting-card'));
 const InvoiceGenerator = lazy(() => import('../tools/invoice'));
 const JsonFormatter = lazy(() => import('../tools/json-formatter'));
+const JsonYamlConverter = lazy(() => import('../tools/json-yaml'));
+const UrlEncoderDecoder = lazy(() => import('../tools/url-encoder-decoder'));
 const KeyPairGenerator = lazy(() => import('../tools/key-pair-generator'));
 const ImageCompressor = lazy(() => import('../tools/image-compressor'));
 const ImageWatermark = lazy(() => import('../tools/image-watermark'));
@@ -46,6 +48,11 @@ export function AppRoutes() {
           path="/generator/greeting-card"
         />
         <Route element={<JsonFormatter />} path="/developer/json-formatter" />
+        <Route element={<JsonYamlConverter />} path="/developer/json-yaml" />
+        <Route
+          element={<UrlEncoderDecoder />}
+          path="/developer/url-encoder-decoder"
+        />
         <Route
           element={<KeyPairGenerator />}
           path="/developer/key-pair-generator"
