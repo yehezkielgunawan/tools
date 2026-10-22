@@ -76,6 +76,22 @@ test('finds the greeting card generator by its occasions', () => {
   }
 });
 
+test('finds JSON/YAML, URL encoding, and JSON viewer tools by keyword', () => {
+  renderApp();
+  fireEvent.click(screen.getByRole('button', { name: /search tools/i }));
+  const dialog = within(screen.getByRole('dialog', { name: /search tools/i }));
+  for (const [keyword, name, path] of [
+    ['yaml', /JSON ↔ YAML/, '/developer/json-yaml'],
+    ['percent', /URL Encoder & Decoder/, '/developer/url-encoder-decoder'],
+    ['tree', /JSON Formatter & Viewer/, '/developer/json-formatter'],
+  ] as const) {
+    fireEvent.change(dialog.getByRole('searchbox'), {
+      target: { value: keyword },
+    });
+    expect(dialog.getByRole('link', { name })).toHaveAttribute('href', path);
+  }
+});
+
 test('opens search with Ctrl+K from a non-homepage route', () => {
   renderApp('/changelog');
 

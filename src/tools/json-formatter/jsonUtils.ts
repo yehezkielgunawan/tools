@@ -6,7 +6,7 @@ type JsonParseResult =
   | { ok: true; value: unknown }
   | { ok: false; error: string };
 
-function parseJson(input: string): JsonParseResult {
+export function parseJson(input: string): JsonParseResult {
   const trimmed = input.trim();
 
   if (!trimmed) {

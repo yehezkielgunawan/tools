@@ -1,11 +1,13 @@
 import { Braces, CheckCircle2, Eraser, List, Minimize2 } from 'lucide-react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import ToolLayout from '../../components/layout/ToolLayout';
 import CopyButton from '../../components/ui/CopyButton';
+import JsonTreeViewer from './JsonTreeViewer';
 import {
   formatJson,
   type JsonOperationResult,
   minifyJson,
+  parseJson,
   validateJson,
 } from './jsonUtils';
 
@@ -31,6 +33,7 @@ function getSuccessMessage(
 export default function JsonFormatter() {
   const [value, setValue] = useState('');
   const [status, setStatus] = useState<StatusMessage | null>(null);
+  const parsed = useMemo(() => parseJson(value), [value]);
 
   const runOperation = (
     operation: 'format' | 'minify' | 'validate',
@@ -57,28 +60,44 @@ export default function JsonFormatter() {
   return (
     <ToolLayout
       category="Developer"
-      description="Format, validate, and minify JSON without sending it anywhere."
-      title="JSON Formatter"
+      description="Format, validate, minify, and explore JSON in a collapsible tree without sending it anywhere."
+      title="JSON Formatter & Viewer"
     >
       <div className="space-y-5">
-        <div>
-          <label className="label" htmlFor="json-input">
-            <span className="label-text font-medium">JSON input</span>
-          </label>
-          <textarea
-            aria-describedby={status ? 'json-status' : undefined}
-            aria-invalid={status?.kind === 'error'}
-            aria-label="JSON input"
-            className="textarea min-h-96 w-full overflow-x-auto font-mono text-sm leading-6"
-            id="json-input"
-            onChange={(event) => {
-              setValue(event.target.value);
-              setStatus(null);
-            }}
-            placeholder={'{"name":"Yehezgun","active":true}'}
-            spellCheck={false}
-            value={value}
-          />
+        <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="min-w-0">
+            <label className="label" htmlFor="json-input">
+              <span className="font-medium">JSON input</span>
+            </label>
+            <textarea
+              aria-describedby={status ? 'json-status' : undefined}
+              aria-invalid={status?.kind === 'error'}
+              aria-label="JSON input"
+              className="textarea min-h-96 w-full overflow-x-auto font-mono text-sm leading-6"
+              id="json-input"
+              onChange={(event) => {
+                setValue(event.target.value);
+                setStatus(null);
+              }}
+              placeholder={'{"name":"Yehezgun","active":true}'}
+              spellCheck={false}
+              value={value}
+            />
+          </div>
+          <section aria-label="JSON tree preview" className="min-w-0">
+            <h2 className="mb-2 text-sm font-medium">Tree preview</h2>
+            <div className="max-h-[36rem] min-h-96 overflow-auto rounded-field border border-base-300 bg-base-200/30 p-3">
+              {parsed.ok ? (
+                <JsonTreeViewer key={value} value={parsed.value} />
+              ) : (
+                <p className="text-sm leading-6 text-base-content/60">
+                  {value.trim()
+                    ? 'Enter valid JSON to explore its structure.'
+                    : 'Enter JSON to see its structure here.'}
+                </p>
+              )}
+            </div>
+          </section>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">

@@ -83,7 +83,7 @@ test('updates metadata after client-side navigation', async () => {
   );
 
   await waitFor(() => {
-    expect(document.title).toBe('JSON Formatter | Yehezgun Tools');
+    expect(document.title).toBe('JSON Formatter & Viewer | Yehezgun Tools');
   });
   expect(document.querySelector('link[rel="canonical"]')).toHaveAttribute(
     'href',
