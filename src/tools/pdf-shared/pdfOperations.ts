@@ -1,4 +1,4 @@
-import { PDFDocument } from 'pdf-lib';
+import { ParseSpeeds, PDFDocument } from 'pdf-lib';
 import {
   MAX_MERGE_BYTES,
   MAX_OUTPUT_PAGES,
@@ -18,7 +18,9 @@ export async function mergePdfs(
   }
   const output = await PDFDocument.create();
   for (const bytes of inputs) {
-    const source = await PDFDocument.load(bytes);
+    const source = await PDFDocument.load(bytes, {
+      parseSpeed: ParseSpeeds.Fastest,
+    });
     if (!source.getPageCount())
       throw new RangeError('One of these PDFs has no pages.');
     if (output.getPageCount() + source.getPageCount() > MAX_OUTPUT_PAGES) {
@@ -27,7 +29,8 @@ export async function mergePdfs(
     const pages = await output.copyPages(source, source.getPageIndices());
     for (const page of pages) output.addPage(page);
   }
-  return output.save();
+  // Timer-based yields can make large saves crawl in background tabs.
+  return output.save({ objectsPerTick: Infinity });
 }
 
 export async function splitPdf(
@@ -42,7 +45,9 @@ export async function splitPdf(
   ) {
     throw new RangeError('Select 500 output pages or fewer across all ranges.');
   }
-  const source = await PDFDocument.load(bytes);
+  const source = await PDFDocument.load(bytes, {
+    parseSpeed: ParseSpeeds.Fastest,
+  });
   for (const group of groups) {
     if (!group.length || new Set(group).size !== group.length) {
       throw new RangeError(
@@ -70,7 +75,7 @@ export async function splitPdf(
       group.map((page) => page - 1),
     );
     for (const page of pages) output.addPage(page);
-    outputs.push(await output.save());
+    outputs.push(await output.save({ objectsPerTick: Infinity }));
   }
   return outputs;
 }

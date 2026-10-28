@@ -7,6 +7,7 @@ export type ToolIconName =
   | 'key-round'
   | 'image'
   | 'stamp'
+  | 'ferris-wheel'
   | 'file-text';
 
 export interface ToolDefinition {
@@ -30,6 +31,24 @@ export const toolCategories = [
 }[];
 
 export const tools = [
+  {
+    id: 'random-spinner',
+    name: 'Random Spinner Wheel',
+    description:
+      'Spin a wheel to pick a name or make a decision, with saved entries and recent results, locally in your browser.',
+    path: '/generator/random-spinner',
+    category: 'generator',
+    keywords: [
+      'random',
+      'spinner',
+      'wheel',
+      'picker',
+      'names',
+      'raffle',
+      'decision',
+    ],
+    icon: 'ferris-wheel',
+  },
   {
     id: 'invoice',
     name: 'Invoice Generator',

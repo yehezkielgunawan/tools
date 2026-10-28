@@ -1,4 +1,4 @@
-import { PDFDocument } from 'pdf-lib';
+import { ParseSpeeds, PDFDocument } from 'pdf-lib';
 
 export const MAX_PDF_FILE_BYTES = 25 * 1024 * 1024;
 export const MAX_MERGE_BYTES = 100 * 1024 * 1024;
@@ -67,7 +67,10 @@ export async function loadPdfFile(file: File): Promise<LoadedPdfFile> {
       if (error instanceof Error) error.name = 'PdfInputError';
       throw error;
     }
-    const document = await PDFDocument.load(bytes);
+    // Avoid timer yields that browsers throttle when this tab is in the background.
+    const document = await PDFDocument.load(bytes, {
+      parseSpeed: ParseSpeeds.Fastest,
+    });
     const pageCount = document.getPageCount();
     if (!pageCount)
       throw new RangeError('This PDF has no pages. Choose another file.');

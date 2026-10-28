@@ -1,4 +1,4 @@
-import { describe, expect, it } from '@rstest/core';
+import { describe, expect, it, rs } from '@rstest/core';
 import { degrees, PDFDocument } from 'pdf-lib';
 import {
   loadPdfFile,
@@ -17,6 +17,20 @@ async function makePdf(widths: number[]) {
 }
 
 describe('local PDF operations', () => {
+  it('processes object-heavy PDFs without timer-based parse/save yields', async () => {
+    const bytes = await makePdf(Array(100).fill(200));
+    const timer = rs.spyOn(globalThis, 'setTimeout');
+    try {
+      await loadPdfFile(new File([bytes], 'many-pages.pdf'));
+      const merged = await mergePdfs([bytes, bytes]);
+      const [split] = await splitPdf(merged, [[1, 100, 200]]);
+      expect(timer).not.toHaveBeenCalled();
+      const output = await PDFDocument.load(split);
+      expect(output.getPageCount()).toBe(3);
+    } finally {
+      timer.mockRestore();
+    }
+  });
   it('merges real pages in input order and preserves geometry and contents', async () => {
     const bytes = await mergePdfs([
       await makePdf([200, 210]),

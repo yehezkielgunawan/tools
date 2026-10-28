@@ -1,6 +1,7 @@
 import {
   ArrowUpRight,
   Braces,
+  FerrisWheel,
   FileText,
   Gift,
   Image as ImageIcon,
@@ -21,6 +22,7 @@ const icons = {
   'qr-code': QrCode,
   stamp: Stamp,
   gift: Gift,
+  'ferris-wheel': FerrisWheel,
 } as const;
 
 interface ToolCardProps {
