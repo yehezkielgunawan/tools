@@ -1,5 +1,6 @@
 import {
   Braces,
+  FerrisWheel,
   FileText,
   Gift,
   Grid2X2,
@@ -29,6 +30,7 @@ const icons = {
   'qr-code': QrCode,
   stamp: Stamp,
   gift: Gift,
+  'ferris-wheel': FerrisWheel,
 } as const;
 
 export default function SidebarNavigation({

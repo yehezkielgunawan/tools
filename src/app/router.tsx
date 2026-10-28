@@ -8,6 +8,7 @@ const WhatsAppLinkGenerator = lazy(() => import('../tools/whatsapp-link'));
 const QrCodeGenerator = lazy(() => import('../tools/qr-code'));
 const GreetingCardGenerator = lazy(() => import('../tools/greeting-card'));
 const InvoiceGenerator = lazy(() => import('../tools/invoice'));
+const RandomSpinner = lazy(() => import('../tools/random-spinner'));
 const JsonFormatter = lazy(() => import('../tools/json-formatter'));
 const JsonYamlConverter = lazy(() => import('../tools/json-yaml'));
 const UrlEncoderDecoder = lazy(() => import('../tools/url-encoder-decoder'));
@@ -43,6 +44,7 @@ export function AppRoutes() {
         />
         <Route element={<QrCodeGenerator />} path="/generator/qr-code" />
         <Route element={<InvoiceGenerator />} path="/generator/invoice" />
+        <Route element={<RandomSpinner />} path="/generator/random-spinner" />
         <Route
           element={<GreetingCardGenerator />}
           path="/generator/greeting-card"
