@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.15.0](https://github.com/yehezkielgunawan/tools/compare/v1.14.0...v1.15.0) (2026-10-28)
+
+
+### Features
+
+* add random spinner wheel and improve PDF processing ([d66fe68](https://github.com/yehezkielgunawan/tools/commit/d66fe68afe0c51deca5a44a33037e84f18abeba3))
+* **random-spinner:** add wheel with saved entries and recent results ([5b2c3b6](https://github.com/yehezkielgunawan/tools/commit/5b2c3b665187a9af328a4049de0582649a7175f1))
+
+
+### Performance
+
+* **pdf:** remove timer yields from merge and split processing ([1534262](https://github.com/yehezkielgunawan/tools/commit/15342625e92d061499eda2f6ec1bb2b6c7d30665))
+
 ## [1.14.0](https://github.com/yehezkielgunawan/tools/compare/v1.13.0...v1.14.0) (2026-10-22)
 
 
