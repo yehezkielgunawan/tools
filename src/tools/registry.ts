@@ -192,6 +192,16 @@ export const tools = [
     icon: 'stamp',
   },
   {
+    id: 'meme-maker',
+    name: 'Meme Maker',
+    description:
+      'Browse meme templates, customize captions locally, and download or copy your meme as a PNG.',
+    path: '/image/meme-maker',
+    category: 'image',
+    keywords: ['meme', 'maker', 'template', 'caption', 'image', 'png'],
+    icon: 'image',
+  },
+  {
     id: 'pdf-editor',
     name: 'PDF Editor',
     description: 'Add text, draw, and sign PDFs locally in your browser.',

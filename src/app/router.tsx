@@ -15,6 +15,7 @@ const UrlEncoderDecoder = lazy(() => import('../tools/url-encoder-decoder'));
 const KeyPairGenerator = lazy(() => import('../tools/key-pair-generator'));
 const ImageCompressor = lazy(() => import('../tools/image-compressor'));
 const ImageWatermark = lazy(() => import('../tools/image-watermark'));
+const MemeMaker = lazy(() => import('../tools/meme-maker'));
 const PdfEditor = lazy(() => import('../tools/pdf-editor'));
 const PdfMerger = lazy(() => import('../tools/pdf-merger'));
 const PdfSplitter = lazy(() => import('../tools/pdf-splitter'));
@@ -61,6 +62,7 @@ export function AppRoutes() {
         />
         <Route element={<ImageCompressor />} path="/image/image-compressor" />
         <Route element={<ImageWatermark />} path="/image/image-watermark" />
+        <Route element={<MemeMaker />} path="/image/meme-maker" />
         <Route element={<PdfEditor />} path="/pdf/pdf-editor" />
         <Route element={<PdfMerger />} path="/pdf/pdf-merger" />
         <Route element={<PdfSplitter />} path="/pdf/pdf-splitter" />
