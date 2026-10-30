@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.16.0](https://github.com/yehezkielgunawan/tools/compare/v1.15.0...v1.16.0) (2026-10-30)
+
+
+### Features
+
+* **meme-maker:** add API templates and local meme editor ([f79ce2a](https://github.com/yehezkielgunawan/tools/commit/f79ce2a7ee7eb542a9e221923b3443e04151ff6e))
+* **meme-maker:** add local editor and integrate image tool ([59c9935](https://github.com/yehezkielgunawan/tools/commit/59c993534082a32d8d08432e12b8d538af7ae16f))
+* **meme-maker:** load and validate remote meme templates ([c3563e1](https://github.com/yehezkielgunawan/tools/commit/c3563e167d6a4363031453e60a5ee64e28e97f71))
+* **meme-maker:** render captions and export PNG images locally ([f911c06](https://github.com/yehezkielgunawan/tools/commit/f911c06b25fc7511a42799556c7fc235845df6df))
+
 ## [1.15.0](https://github.com/yehezkielgunawan/tools/compare/v1.14.0...v1.15.0) (2026-10-28)
 
 
