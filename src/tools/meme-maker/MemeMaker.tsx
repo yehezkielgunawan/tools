@@ -11,7 +11,11 @@ import CaptionControls from './CaptionControls';
 import MemePreview from './MemePreview';
 import { fetchMemeTemplates } from './memeApi';
 import { canCopyMeme, copyMeme, downloadMeme } from './memeExport';
-import { type CaptionPosition, createDefaultCaptions } from './memeGeometry';
+import {
+  type CaptionPosition,
+  createDefaultCaptions,
+  MAX_MEME_CAPTIONS,
+} from './memeGeometry';
 import { exportMemePng } from './memeRenderer';
 import type { MemeCaption, MemeTemplate, PreparedMemeImage } from './memeTypes';
 import { prepareMemeImage } from './prepareMemeImage';
@@ -49,6 +53,7 @@ export default function MemeMaker() {
   const [copying, setCopying] = useState(false);
   const imageRequest = useRef<AbortController | null>(null);
   const generation = useRef(0);
+  const captionSequence = useRef(0);
   const image = editor?.image;
   const blob = artifact?.editor === editor ? artifact?.blob : null;
   const search = query.trim();
@@ -152,7 +157,9 @@ export default function MemeMaker() {
     }
   };
 
-  const changeCaption = (index: number, patch: Partial<MemeCaption>): void => {
+  const changeCaptions = (
+    update: (captions: MemeCaption[]) => MemeCaption[],
+  ): void => {
     generation.current += 1;
     setStatus('');
     setError('');
@@ -161,12 +168,37 @@ export default function MemeMaker() {
       current
         ? {
             ...current,
-            captions: current.captions.map((caption, i) =>
-              i === index ? { ...caption, ...patch } : caption,
-            ),
+            captions: update(current.captions),
           }
         : current,
     );
+  };
+  const changeCaption = (index: number, patch: Partial<MemeCaption>): void =>
+    changeCaptions((captions) =>
+      captions.map((caption, i) =>
+        i === index ? { ...caption, ...patch } : caption,
+      ),
+    );
+  const addCaption = (): void => {
+    if (!editor || editor.captions.length >= MAX_MEME_CAPTIONS) return;
+    captionSequence.current += 1;
+    const caption = {
+      ...createDefaultCaptions(1)[0],
+      id: `added-caption-${captionSequence.current}`,
+      y: 0.3 + ((editor.captions.length - 1) % 5) * 0.1,
+    };
+    setActiveIndex(editor.captions.length);
+    changeCaptions((captions) => [...captions, caption]);
+  };
+  const removeCaption = (index: number): void => {
+    if (!editor || editor.captions.length <= 1 || !editor.captions[index])
+      return;
+    setActiveIndex((current) =>
+      current > index
+        ? current - 1
+        : Math.min(current, editor.captions.length - 2),
+    );
+    changeCaptions((captions) => captions.filter((_, i) => i !== index));
   };
   const moveCaption = (index: number, position: CaptionPosition): void =>
     changeCaption(index, position);
@@ -358,6 +390,8 @@ export default function MemeMaker() {
               activeIndex={activeIndex}
               onActivate={setActiveIndex}
               onChange={changeCaption}
+              onAdd={addCaption}
+              onRemove={removeCaption}
             />
           </div>
         ) : (

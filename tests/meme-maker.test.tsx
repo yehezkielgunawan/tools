@@ -231,7 +231,7 @@ test('edits captions and style, supports keyboard positioning, and resets on tem
   fireEvent.click(screen.getByRole('button', { name: 'Use Buzz Lightyear' }));
   expect(screen.getByLabelText('Caption 1 text')).toHaveValue('Hello there');
   expect(screen.getByLabelText('Caption 1 text size')).toHaveValue('12');
-  const handle = screen.getByRole('button', { name: /move caption 1/i });
+  const handle = screen.getByRole('button', { name: /^move caption 1\./i });
   const previous = handle.style.left;
   fireEvent.keyDown(handle, { key: 'ArrowRight' });
   expect(handle.style.left).not.toBe(previous);
@@ -242,6 +242,129 @@ test('edits captions and style, supports keyboard positioning, and resets on tem
   await waitFor(() =>
     expect(screen.getByLabelText('Caption 1 text')).toHaveValue(''),
   );
+});
+
+test('adds and removes captions while preserving existing text, styles, and positions', async () => {
+  mount();
+  fireEvent.click(
+    await screen.findByRole('button', { name: 'Use Buzz Lightyear' }),
+  );
+  fireEvent.change(await screen.findByLabelText('Caption 1 text'), {
+    target: { value: 'Keep me' },
+  });
+  fireEvent.change(screen.getByLabelText('Caption 1 text size'), {
+    target: { value: '12' },
+  });
+  fireEvent.change(screen.getByLabelText('Caption 1 text color'), {
+    target: { value: '#ff0000' },
+  });
+  const firstHandle = screen.getByRole('button', {
+    name: /^move caption 1\./i,
+  });
+  fireEvent.keyDown(firstHandle, { key: 'ArrowRight' });
+  const left = firstHandle.style.left;
+  fireEvent.click(screen.getByRole('button', { name: 'Add caption' }));
+  fireEvent.change(screen.getByLabelText('Caption 3 text'), {
+    target: { value: 'Third caption' },
+  });
+  const thirdHandle = screen.getByRole('button', {
+    name: /^move caption 3\./i,
+  });
+  fireEvent.keyDown(thirdHandle, { key: 'ArrowDown' });
+  const top = thirdHandle.style.top;
+  fireEvent.click(screen.getByRole('button', { name: 'Remove caption 2' }));
+  expect(screen.getByLabelText('Caption 1 text')).toHaveValue('Keep me');
+  expect(screen.getByLabelText('Caption 1 text size')).toHaveValue('12');
+  expect(screen.getByLabelText('Caption 1 text color')).toHaveValue('#ff0000');
+  expect(
+    screen.getByRole('button', { name: /^move caption 1\./i }).style.left,
+  ).toBe(left);
+  expect(screen.getByLabelText('Caption 2 text')).toHaveValue('Third caption');
+  expect(
+    screen.getByRole('button', { name: /^move caption 2\./i }).style.top,
+  ).toBe(top);
+  expect(
+    screen.getByRole('button', { name: /^move caption 2\./i }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  fireEvent.click(screen.getByRole('button', { name: 'Add caption' }));
+  expect(screen.getByLabelText('Caption 3 text')).toHaveValue('');
+  expect(screen.getByLabelText('Caption 2 text')).toHaveValue('Third caption');
+  fireEvent.click(screen.getByRole('button', { name: 'Use Ancient Aliens' }));
+  await waitFor(() =>
+    expect(screen.getByLabelText('Caption 1 text')).toHaveValue(''),
+  );
+  expect(screen.queryByLabelText('Caption 3 text')).not.toBeInTheDocument();
+});
+
+test('allows between one and ten captions and keeps a valid selection after removing the last', async () => {
+  mount();
+  fireEvent.click(
+    await screen.findByRole('button', { name: 'Use Buzz Lightyear' }),
+  );
+  await screen.findByLabelText('Caption 1 text');
+  for (let index = 2; index < 10; index += 1)
+    fireEvent.click(screen.getByRole('button', { name: 'Add caption' }));
+  expect(screen.getByLabelText('Caption 10 text')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Add caption' })).toBeDisabled();
+  for (let count = 10; count > 1; count -= 1)
+    fireEvent.click(
+      screen.getByRole('button', { name: `Remove caption ${count}` }),
+    );
+  expect(
+    screen.getByRole('button', { name: 'Remove caption 1' }),
+  ).toBeDisabled();
+  expect(
+    screen.getByRole('button', { name: /^move caption 1\./i }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  expect(screen.getByRole('button', { name: 'Add caption' })).toBeEnabled();
+});
+
+test('regenerates the exported PNG when captions are added or removed', async () => {
+  const renderedTexts: string[][] = [];
+  const baseContext = document.createElement('canvas').getContext('2d');
+  if (!baseContext) throw new Error('Expected a mocked canvas context.');
+  const contexts = new WeakMap<HTMLCanvasElement, CanvasRenderingContext2D>();
+  rs.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(
+    function (this: HTMLCanvasElement) {
+      if (!contexts.has(this))
+        contexts.set(this, { ...baseContext, fillText: rs.fn() });
+      return contexts.get(this) ?? null;
+    },
+  );
+  rs.spyOn(HTMLCanvasElement.prototype, 'toBlob').mockImplementation(function (
+    this: HTMLCanvasElement,
+    callback,
+  ) {
+    const context = contexts.get(this);
+    if (!context) throw new Error('PNG exported without rendering.');
+    renderedTexts.push(
+      rs.mocked(context.fillText).mock.calls.map((call) => String(call[0])),
+    );
+    callback(new Blob(['png'], { type: 'image/png' }));
+  });
+  mount();
+  fireEvent.click(
+    await screen.findByRole('button', { name: 'Use Buzz Lightyear' }),
+  );
+  await screen.findByLabelText('Caption 1 text');
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /download png/i })).toBeEnabled(),
+  );
+  fireEvent.click(screen.getByRole('button', { name: 'Add caption' }));
+  expect(screen.getByRole('button', { name: /download png/i })).toBeDisabled();
+  fireEvent.change(screen.getByLabelText('Caption 3 text'), {
+    target: { value: 'Export me' },
+  });
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /download png/i })).toBeEnabled(),
+  );
+  expect(renderedTexts.at(-1)).toContain('Export me');
+  fireEvent.click(screen.getByRole('button', { name: 'Remove caption 3' }));
+  expect(screen.getByRole('button', { name: /download png/i })).toBeDisabled();
+  await waitFor(() =>
+    expect(screen.getByRole('button', { name: /download png/i })).toBeEnabled(),
+  );
+  expect(renderedTexts.at(-1)).not.toContain('Export me');
 });
 
 test('ignores stale template requests and releases their images', async () => {
@@ -344,7 +467,9 @@ test('drags captions with a stable pointer offset and clamps their bounds', asyn
   fireEvent.click(
     await screen.findByRole('button', { name: 'Use Buzz Lightyear' }),
   );
-  const handle = await screen.findByRole('button', { name: /move caption 1/i });
+  const handle = await screen.findByRole('button', {
+    name: /^move caption 1\./i,
+  });
   fireEvent.pointerDown(handle, {
     pointerId: 1,
     button: 0,
