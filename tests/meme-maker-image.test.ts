@@ -5,7 +5,7 @@ const template = {
   id: 'buzz',
   name: 'Buzz',
   captionCount: 2,
-  blankUrl: 'https://api.memegen.link/images/buzz.png',
+  blankUrl: 'https://i.imgflip.com/30b1gx.jpg',
 };
 
 function png(width = 640, height = 480): Uint8Array<ArrayBuffer> {
@@ -64,6 +64,34 @@ test('downscales working images to 2048px without upscaling', async () => {
   );
   const image = await prepareMemeImage(template);
   expect([image.width, image.height]).toEqual([2048, 1024]);
+  image.release();
+});
+
+test('prepares a JustMeme JPEG for local PNG rendering with credential-free CORS', async () => {
+  const decode = rs
+    .fn()
+    .mockResolvedValue({ width: 640, height: 480, close: rs.fn() });
+  rs.stubGlobal('createImageBitmap', decode);
+  const jpeg = new Uint8Array([
+    0xff, 0xd8, 0xff, 0xc0, 0, 7, 8, 1, 0xe0, 2, 0x80,
+  ]);
+  const fetchMock = rs
+    .fn()
+    .mockResolvedValue(
+      new Response(jpeg, { headers: { 'Content-Type': 'image/jpeg' } }),
+    );
+  rs.stubGlobal('fetch', fetchMock);
+  const image = await prepareMemeImage(template);
+  expect([image.width, image.height]).toEqual([640, 480]);
+  expect(fetchMock).toHaveBeenCalledWith(
+    template.blankUrl,
+    expect.objectContaining({
+      mode: 'cors',
+      credentials: 'omit',
+      referrerPolicy: 'no-referrer',
+    }),
+  );
+  expect(decode.mock.calls[0][0].type).toBe('image/jpeg');
   image.release();
 });
 

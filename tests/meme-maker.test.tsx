@@ -34,24 +34,34 @@ beforeEach(() => {
   rs.stubGlobal(
     'fetch',
     rs.fn().mockImplementation(
-      async () =>
+      async (input: string) =>
         new Response(
-          JSON.stringify([
-            {
-              id: 'buzz',
-              name: 'Buzz Lightyear',
-              lines: 2,
-              overlays: 0,
-              blank: 'https://api.memegen.link/images/buzz.jpg',
-            },
-            {
-              id: 'aag',
-              name: 'Ancient Aliens',
-              lines: 2,
-              overlays: 0,
-              blank: 'https://api.memegen.link/images/aag.jpg',
-            },
-          ]),
+          JSON.stringify({
+            success: true,
+            total: 2,
+            templates: [
+              {
+                id: 'buzz',
+                name: 'Buzz Lightyear',
+                slug: 'buzz',
+                url: 'https://i.imgflip.com/buzz.jpg',
+              },
+              {
+                id: 'aag',
+                name: 'Ancient Aliens',
+                slug: 'aag',
+                url: 'https://i.imgflip.com/aag.jpg',
+              },
+            ].filter(
+              (item) =>
+                !input.includes('/search?') ||
+                item.name
+                  .toLowerCase()
+                  .includes(
+                    new URL(input).searchParams.get('q')?.toLowerCase() ?? '',
+                  ),
+            ),
+          }),
         ),
     ),
   );
@@ -76,7 +86,7 @@ afterEach(() => {
   rs.unstubAllGlobals();
 });
 
-test('browses and searches templates locally with clear privacy information', async () => {
+test('browses and searches JustMeme with clear privacy information', async () => {
   mount();
   expect(screen.getByRole('button', { name: /download png/i })).toBeDisabled();
   await screen.findByRole('button', { name: 'Use Buzz Lightyear' });
@@ -84,19 +94,122 @@ test('browses and searches templates locally with clear privacy information', as
     screen.getByRole('searchbox', { name: /search templates/i }),
     { target: { value: 'ALIENS' } },
   );
+  await screen.findByRole('button', { name: 'Use Ancient Aliens' });
   expect(
     screen.queryByRole('button', { name: 'Use Buzz Lightyear' }),
   ).not.toBeInTheDocument();
-  expect(
-    screen.getByRole('button', { name: 'Use Ancient Aliens' }),
-  ).toBeInTheDocument();
   fireEvent.change(screen.getByRole('searchbox'), {
     target: { value: 'not found' },
   });
-  expect(screen.getByText(/no templates match/i)).toBeInTheDocument();
-  expect(fetch).toHaveBeenCalledTimes(1);
+  await screen.findByText(/no templates match/i);
+  expect(fetch).toHaveBeenCalledTimes(3);
+  expect(screen.getByRole('link', { name: 'justmeme.wtf' })).toHaveAttribute(
+    'href',
+    'https://justmeme.wtf/',
+  );
   expect(
     screen.getByText(/your captions and finished memes stay on your device/i),
+  ).toBeInTheDocument();
+});
+
+test('loads more pages without duplicates and retries failed pages without losing the catalog', async () => {
+  const fetchMock = rs.mocked(fetch);
+  fetchMock.mockResolvedValueOnce(
+    new Response(
+      JSON.stringify({
+        success: true,
+        total: 48,
+        templates: [
+          {
+            id: 'buzz',
+            slug: 'buzz',
+            name: 'Buzz Lightyear',
+            url: 'https://i.imgflip.com/buzz.jpg',
+          },
+        ],
+      }),
+    ),
+  );
+  mount();
+  await screen.findByRole('button', { name: 'Use Buzz Lightyear' });
+  fetchMock.mockRejectedValueOnce(new Error('Offline'));
+  fireEvent.click(screen.getByRole('button', { name: /show more templates/i }));
+  await screen.findByRole('alert');
+  expect(
+    screen.getByRole('button', { name: 'Use Buzz Lightyear' }),
+  ).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: /retry templates/i }));
+  await screen.findByRole('button', { name: 'Use Ancient Aliens' });
+  expect(
+    screen.getAllByRole('button', { name: 'Use Buzz Lightyear' }),
+  ).toHaveLength(1);
+  expect(fetchMock).toHaveBeenLastCalledWith(
+    'https://justmeme.wtf/api/v1/templates?page=2&limit=24',
+    expect.anything(),
+  );
+});
+
+test('debounces searches, skips one-character queries, and restores browsing when cleared', async () => {
+  mount();
+  await screen.findByRole('button', { name: 'Use Buzz Lightyear' });
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'a' } });
+  expect(
+    await screen.findByText(/enter at least two characters/i),
+  ).toBeInTheDocument();
+  expect(fetch).toHaveBeenCalledTimes(1);
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'al' } });
+  fireEvent.change(screen.getByRole('searchbox'), {
+    target: { value: 'aliens' },
+  });
+  expect(fetch).toHaveBeenCalledTimes(1);
+  await screen.findByRole('button', { name: 'Use Ancient Aliens' });
+  expect(fetch).toHaveBeenCalledTimes(2);
+  fireEvent.change(screen.getByRole('searchbox'), { target: { value: '' } });
+  await screen.findByRole('button', { name: 'Use Buzz Lightyear' });
+  expect(fetch).toHaveBeenCalledTimes(3);
+});
+
+test('keeps search results when only surrounding whitespace changes', async () => {
+  mount();
+  await screen.findByRole('button', { name: 'Use Buzz Lightyear' });
+  fireEvent.change(screen.getByRole('searchbox'), {
+    target: { value: 'aliens' },
+  });
+  await screen.findByRole('button', { name: 'Use Ancient Aliens' });
+  fireEvent.change(screen.getByRole('searchbox'), {
+    target: { value: ' aliens ' },
+  });
+  expect(
+    screen.getByRole('button', { name: 'Use Ancient Aliens' }),
+  ).toBeInTheDocument();
+  expect(fetch).toHaveBeenCalledTimes(2);
+});
+
+test('ignores a search response that completes after a newer query', async () => {
+  mount();
+  await screen.findByRole('button', { name: 'Use Buzz Lightyear' });
+  let finish: (response: Response) => void = () => {};
+  rs.mocked(fetch).mockImplementationOnce(
+    () =>
+      new Promise((resolve) => {
+        finish = resolve;
+      }),
+  );
+  fireEvent.change(screen.getByRole('searchbox'), {
+    target: { value: 'buzz' },
+  });
+  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2));
+  fireEvent.change(screen.getByRole('searchbox'), {
+    target: { value: 'aliens' },
+  });
+  await screen.findByRole('button', { name: 'Use Ancient Aliens' });
+  await act(async () =>
+    finish(
+      new Response(JSON.stringify({ success: true, total: 0, templates: [] })),
+    ),
+  );
+  expect(
+    screen.getByRole('button', { name: 'Use Ancient Aliens' }),
   ).toBeInTheDocument();
 });
 
