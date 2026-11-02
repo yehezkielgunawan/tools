@@ -1,5 +1,7 @@
 import type { MemeCaption } from './memeTypes';
 
+export const MAX_MEME_CAPTIONS = 10;
+
 export interface CaptionPosition {
   x: number;
   y: number;
@@ -11,7 +13,7 @@ export interface CaptionBounds {
 
 export function createDefaultCaptions(count: number): MemeCaption[] {
   return Array.from(
-    { length: Math.max(1, Math.min(10, count)) },
+    { length: Math.max(1, Math.min(MAX_MEME_CAPTIONS, count)) },
     (_, index) => ({
       id: `caption-${index + 1}`,
       text: '',

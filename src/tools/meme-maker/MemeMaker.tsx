@@ -9,9 +9,13 @@ import { useEffect, useRef, useState } from 'react';
 import ToolLayout from '../../components/layout/ToolLayout';
 import CaptionControls from './CaptionControls';
 import MemePreview from './MemePreview';
-import { fetchMemeTemplates, searchMemeTemplates } from './memeApi';
+import { fetchMemeTemplates } from './memeApi';
 import { canCopyMeme, copyMeme, downloadMeme } from './memeExport';
-import { type CaptionPosition, createDefaultCaptions } from './memeGeometry';
+import {
+  type CaptionPosition,
+  createDefaultCaptions,
+  MAX_MEME_CAPTIONS,
+} from './memeGeometry';
 import { exportMemePng } from './memeRenderer';
 import type { MemeCaption, MemeTemplate, PreparedMemeImage } from './memeTypes';
 import { prepareMemeImage } from './prepareMemeImage';
@@ -33,7 +37,9 @@ export default function MemeMaker() {
   const [catalogError, setCatalogError] = useState('');
   const [retry, setRetry] = useState(0);
   const [query, setQuery] = useState('');
-  const [limit, setLimit] = useState(24);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [visibleLimit, setVisibleLimit] = useState(24);
   const [selected, setSelected] = useState<MemeTemplate | null>(null);
   const [editor, setEditor] = useState<EditorState | null>(null);
   const [imageLoading, setImageLoading] = useState(false);
@@ -47,9 +53,10 @@ export default function MemeMaker() {
   const [copying, setCopying] = useState(false);
   const imageRequest = useRef<AbortController | null>(null);
   const generation = useRef(0);
+  const captionSequence = useRef(0);
   const image = editor?.image;
   const blob = artifact?.editor === editor ? artifact?.blob : null;
-  const filtered = searchMemeTemplates(templates, query);
+  const search = query.trim();
   const copySupported = canCopyMeme();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: retry explicitly invalidates the catalog request.
@@ -57,18 +64,39 @@ export default function MemeMaker() {
     const controller = new AbortController();
     setCatalogLoading(true);
     setCatalogError('');
-    fetchMemeTemplates(controller.signal)
-      .then((result) => {
-        if (!controller.signal.aborted) setTemplates(result);
-      })
-      .catch((reason) => {
-        if (!controller.signal.aborted) setCatalogError(message(reason));
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setCatalogLoading(false);
-      });
-    return () => controller.abort();
-  }, [retry]);
+    const load = () =>
+      fetchMemeTemplates({ page, query: search, signal: controller.signal })
+        .then((result) => {
+          if (controller.signal.aborted) return;
+          setTemplates((current) => {
+            if (page === 1) return result.templates;
+            const seen = new Set(current.map((template) => template.id));
+            return [
+              ...current,
+              ...result.templates.filter((template) => !seen.has(template.id)),
+            ];
+          });
+          setHasMore(result.hasMore);
+        })
+        .catch((reason) => {
+          if (!controller.signal.aborted) setCatalogError(message(reason));
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setCatalogLoading(false);
+        });
+    // Search only after typing pauses; cleanup also cancels in-flight results.
+    const timer =
+      search.length >= 2
+        ? setTimeout(() => {
+            void load();
+          }, 500)
+        : undefined;
+    if (timer === undefined) void load();
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [retry, page, search]);
 
   useEffect(() => () => image?.release(), [image]);
   useEffect(
@@ -129,7 +157,9 @@ export default function MemeMaker() {
     }
   };
 
-  const changeCaption = (index: number, patch: Partial<MemeCaption>): void => {
+  const changeCaptions = (
+    update: (captions: MemeCaption[]) => MemeCaption[],
+  ): void => {
     generation.current += 1;
     setStatus('');
     setError('');
@@ -138,12 +168,37 @@ export default function MemeMaker() {
       current
         ? {
             ...current,
-            captions: current.captions.map((caption, i) =>
-              i === index ? { ...caption, ...patch } : caption,
-            ),
+            captions: update(current.captions),
           }
         : current,
     );
+  };
+  const changeCaption = (index: number, patch: Partial<MemeCaption>): void =>
+    changeCaptions((captions) =>
+      captions.map((caption, i) =>
+        i === index ? { ...caption, ...patch } : caption,
+      ),
+    );
+  const addCaption = (): void => {
+    if (!editor || editor.captions.length >= MAX_MEME_CAPTIONS) return;
+    captionSequence.current += 1;
+    const caption = {
+      ...createDefaultCaptions(1)[0],
+      id: `added-caption-${captionSequence.current}`,
+      y: 0.3 + ((editor.captions.length - 1) % 5) * 0.1,
+    };
+    setActiveIndex(editor.captions.length);
+    changeCaptions((captions) => [...captions, caption]);
+  };
+  const removeCaption = (index: number): void => {
+    if (!editor || editor.captions.length <= 1 || !editor.captions[index])
+      return;
+    setActiveIndex((current) =>
+      current > index
+        ? current - 1
+        : Math.min(current, editor.captions.length - 2),
+    );
+    changeCaptions((captions) => captions.filter((_, i) => i !== index));
   };
   const moveCaption = (index: number, position: CaptionPosition): void =>
     changeCaption(index, position);
@@ -170,7 +225,7 @@ export default function MemeMaker() {
       category="Image"
       title="Meme Maker"
       description="Find a familiar face. Give it your own punchline. Make a meme without leaving your browser."
-      privacyNote="Templates load from a third party. Your captions and finished memes stay on your device."
+      privacyNote="Templates and searches use justmeme.wtf; images load from third-party hosts. Your captions and finished memes stay on your device."
     >
       <section aria-labelledby="meme-templates-heading">
         <div className="flex flex-wrap items-end justify-between gap-4">
@@ -191,7 +246,11 @@ export default function MemeMaker() {
               value={query}
               onChange={(event) => {
                 setQuery(event.target.value);
-                setLimit(24);
+                if (event.target.value.trim() === search) return;
+                setPage(1);
+                setVisibleLimit(24);
+                setTemplates([]);
+                setHasMore(false);
               }}
             />
           </label>
@@ -200,13 +259,14 @@ export default function MemeMaker() {
           Blank templates from{' '}
           <a
             className="underline underline-offset-2"
-            href="https://memegen.link/"
+            href="https://justmeme.wtf/"
             target="_blank"
             rel="noreferrer"
           >
-            Memegen.link
+            justmeme.wtf
           </a>
-          . Search covers this catalog, not the whole web.
+          . Search covers this catalog, not the whole web. Enter at least two
+          characters to search.
         </p>
         {catalogLoading ? (
           <p className="py-8 text-sm" role="status">
@@ -225,10 +285,10 @@ export default function MemeMaker() {
             </button>
           </div>
         ) : null}
-        {!catalogLoading && !catalogError ? (
+        {templates.length > 0 || (!catalogLoading && !catalogError) ? (
           <>
             <div className="mt-4 grid max-h-80 grid-cols-2 gap-3 overflow-y-auto p-1 sm:grid-cols-3 lg:grid-cols-4">
-              {filtered.slice(0, limit).map((template) => (
+              {templates.slice(0, visibleLimit).map((template) => (
                 <button
                   key={template.id}
                   type="button"
@@ -245,7 +305,7 @@ export default function MemeMaker() {
                       loading="lazy"
                       referrerPolicy="no-referrer"
                       className="h-full w-full object-contain transition-transform group-hover:scale-[1.03] motion-reduce:transition-none"
-                      src={`${template.blankUrl}?width=240`}
+                      src={template.blankUrl}
                       onError={(event) => {
                         event.currentTarget.hidden = true;
                       }}
@@ -262,18 +322,25 @@ export default function MemeMaker() {
                 </button>
               ))}
             </div>
-            {!filtered.length ? (
+            {!templates.length && search.length !== 1 ? (
               <p className="py-6 text-sm text-base-content/60">
                 No templates match “{query}”. Try another name.
               </p>
             ) : null}
-            {filtered.length > limit ? (
+            {templates.length > visibleLimit || hasMore ? (
               <button
                 className="btn btn-sm mt-3"
                 type="button"
-                onClick={() => setLimit((value) => value + 24)}
+                disabled={catalogLoading || !!catalogError}
+                onClick={() => {
+                  setVisibleLimit((value) => value + 24);
+                  if (templates.length <= visibleLimit)
+                    setPage((value) => value + 1);
+                }}
               >
-                Show more templates ({filtered.length - limit} remaining)
+                {catalogLoading
+                  ? 'Loading more templates…'
+                  : 'Show more templates'}
               </button>
             ) : null}
           </>
@@ -323,6 +390,8 @@ export default function MemeMaker() {
               activeIndex={activeIndex}
               onActivate={setActiveIndex}
               onChange={changeCaption}
+              onAdd={addCaption}
+              onRemove={removeCaption}
             />
           </div>
         ) : (

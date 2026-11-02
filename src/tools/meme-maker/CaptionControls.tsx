@@ -1,3 +1,4 @@
+import { MAX_MEME_CAPTIONS } from './memeGeometry';
 import type { MemeCaption } from './memeTypes';
 
 interface CaptionControlsProps {
@@ -5,6 +6,8 @@ interface CaptionControlsProps {
   activeIndex: number;
   onActivate: (index: number) => void;
   onChange: (index: number, patch: Partial<MemeCaption>) => void;
+  onAdd: () => void;
+  onRemove: (index: number) => void;
 }
 
 export default function CaptionControls({
@@ -12,6 +15,8 @@ export default function CaptionControls({
   activeIndex,
   onActivate,
   onChange,
+  onAdd,
+  onRemove,
 }: CaptionControlsProps) {
   return (
     <div className="space-y-4">
@@ -34,7 +39,11 @@ export default function CaptionControls({
                 onChange(index, { text: event.target.value })
               }
               placeholder={
-                index === 0 ? 'Set up the joke…' : 'Land the punchline…'
+                index === 0
+                  ? 'Set up the joke…'
+                  : index === 1
+                    ? 'Land the punchline…'
+                    : 'Add your caption…'
               }
               value={caption.text}
             />
@@ -83,8 +92,28 @@ export default function CaptionControls({
               Outline
             </label>
           </div>
+          <button
+            type="button"
+            className="btn btn-sm mt-3"
+            aria-label={`Remove caption ${index + 1}`}
+            disabled={captions.length <= 1}
+            onClick={() => onRemove(index)}
+          >
+            Remove caption
+          </button>
         </fieldset>
       ))}
+      <button
+        type="button"
+        className="btn btn-sm"
+        disabled={captions.length >= MAX_MEME_CAPTIONS}
+        onClick={onAdd}
+      >
+        Add caption
+      </button>
+      <p className="text-xs" aria-live="polite">
+        {captions.length} / {MAX_MEME_CAPTIONS} captions
+      </p>
     </div>
   );
 }

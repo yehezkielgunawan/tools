@@ -1,24 +1,21 @@
 import { MAX_INPUT_BYTES } from '../image-compressor/imageUtils';
 import { prepareImage, releaseCanvas } from '../image-compressor/prepareImage';
+import { isSupportedMemeImageUrl } from './memeApi';
 import type { MemeTemplate, PreparedMemeImage } from './memeTypes';
 
 export async function prepareMemeImage(
   template: MemeTemplate,
   signal?: AbortSignal,
 ): Promise<PreparedMemeImage> {
-  const url = new URL(template.blankUrl);
-  if (
-    url.origin !== 'https://api.memegen.link' ||
-    url.username ||
-    url.password
-  ) {
+  if (!isSupportedMemeImageUrl(template.blankUrl)) {
     throw new Error('This template image is not supported.');
   }
   signal?.throwIfAborted();
-  const response = await fetch(url.href, {
+  const response = await fetch(template.blankUrl, {
     signal,
     mode: 'cors',
     credentials: 'omit',
+    referrerPolicy: 'no-referrer',
   });
   if (!response.ok)
     throw new Error('Could not load this template image. Please try again.');
@@ -29,7 +26,7 @@ export async function prepareMemeImage(
   }
   const blob = await response.blob();
   signal?.throwIfAborted();
-  const file = new File([blob], `${template.id}.png`, { type: blob.type });
+  const file = new File([blob], template.id, { type: blob.type });
   const prepared = await prepareImage(file, 2048, 'image/png');
   if (signal?.aborted) {
     releaseCanvas(prepared.canvas);
