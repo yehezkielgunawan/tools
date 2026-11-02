@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.17.0](https://github.com/yehezkielgunawan/tools/compare/v1.16.0...v1.17.0) (2026-11-02)
+
+
+### Features
+
+* **meme-maker:** migrate template catalog to JustMeme ([f344886](https://github.com/yehezkielgunawan/tools/commit/f344886bf0fcf6fcbc5b77af5b9468fcd5158cab))
+* **meme-maker:** migrate to JustMeme and add dynamic captions ([fe69f95](https://github.com/yehezkielgunawan/tools/commit/fe69f95e60d3f863cbb163c64f4b39dc8bd5858f))
+* **meme-maker:** support adding and removing captions ([7f9c6c2](https://github.com/yehezkielgunawan/tools/commit/7f9c6c2de6aadf71c86f55647692919f80adc7df))
+
 ## [1.16.0](https://github.com/yehezkielgunawan/tools/compare/v1.15.0...v1.16.0) (2026-10-30)
 
 
