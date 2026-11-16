@@ -20,6 +20,7 @@ const changelog = parseChangelog(
 );
 const require = createRequire(import.meta.url);
 const pdfjsDistDirectory = dirname(require.resolve('pdfjs-dist/package.json'));
+const libheifDirectory = dirname(require.resolve('libheif-js/package.json'));
 
 validateCurrentRelease(packageJson.version, changelog);
 
@@ -33,6 +34,10 @@ export default defineConfig({
   },
   output: {
     copy: [
+      {
+        from: resolve(libheifDirectory, 'libheif-wasm/LICENSE'),
+        to: 'licenses/libheif-LGPL-GPL.txt',
+      },
       {
         from: resolve(pdfjsDistDirectory, 'cmaps'),
         to: 'static/pdfjs/cmaps',
@@ -163,7 +168,8 @@ export default defineConfig({
           ],
           navigateFallback: '/index.html',
           skipWaiting: false,
-          globIgnores: ['**/*.wasm'],
+          // Load the HEIC decoder only when a HEIC file is selected, not on PWA install.
+          globIgnores: ['**/*.wasm', '**/image-converter-heic*.js'],
         },
       },
       webAppManifest: {

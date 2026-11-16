@@ -21,6 +21,10 @@ function renderApp(path = '/') {
               element={<h1>Image Watermark page</h1>}
               path="/image/image-watermark"
             />
+            <Route
+              element={<h1>Image Converter page</h1>}
+              path="/image/image-converter"
+            />
           </Routes>
         </AppShell>
       </ThemeProvider>
@@ -211,7 +215,7 @@ test('moves through search results with arrow keys and opens the focused result 
   fireEvent.keyDown(secondResult, { key: 'Enter' });
 
   expect(
-    screen.getByRole('heading', { name: 'Image Watermark page' }),
+    screen.getByRole('heading', { name: 'Image Converter page' }),
   ).toBeInTheDocument();
   expect(dialog).not.toHaveAttribute('open');
 });

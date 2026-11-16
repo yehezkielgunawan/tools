@@ -14,6 +14,7 @@ const JsonYamlConverter = lazy(() => import('../tools/json-yaml'));
 const UrlEncoderDecoder = lazy(() => import('../tools/url-encoder-decoder'));
 const KeyPairGenerator = lazy(() => import('../tools/key-pair-generator'));
 const ImageCompressor = lazy(() => import('../tools/image-compressor'));
+const ImageConverter = lazy(() => import('../tools/image-converter'));
 const ImageWatermark = lazy(() => import('../tools/image-watermark'));
 const MemeMaker = lazy(() => import('../tools/meme-maker'));
 const PdfEditor = lazy(() => import('../tools/pdf-editor'));
@@ -61,6 +62,7 @@ export function AppRoutes() {
           path="/developer/key-pair-generator"
         />
         <Route element={<ImageCompressor />} path="/image/image-compressor" />
+        <Route element={<ImageConverter />} path="/image/image-converter" />
         <Route element={<ImageWatermark />} path="/image/image-watermark" />
         <Route element={<MemeMaker />} path="/image/meme-maker" />
         <Route element={<PdfEditor />} path="/pdf/pdf-editor" />
