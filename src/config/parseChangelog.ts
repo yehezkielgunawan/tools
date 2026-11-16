@@ -138,9 +138,20 @@ export function parseChangelog(markdown: string): ChangelogRelease[] {
         throw invalidLine(lineNumber, 'change description cannot be empty.');
       }
 
-      currentRelease.changes[currentSection]?.push(
-        parseChangeItem(value, lineNumber),
-      );
+      const item = parseChangeItem(value, lineNumber);
+      const items = currentRelease.changes[currentSection] ?? [];
+      currentRelease.changes[currentSection] = items;
+      // Merge commits can repeat a feature with a different source link.
+      // Compare the normalized display content within this release section.
+      if (
+        !items.some(
+          (existing) =>
+            existing.scope === item.scope &&
+            existing.description === item.description,
+        )
+      ) {
+        items.push(item);
+      }
       continue;
     }
 
