@@ -75,6 +75,114 @@ test('normalizes inline markdown references in change descriptions', () => {
   ]);
 });
 
+test('deduplicates scoped entries after removing distinct commit and PR references', () => {
+  const markdown = `# Changelog
+
+## 1.18.0 (2026-11-16)
+
+### Features
+
+* **image:** add private browser-based image converter ([885976c](https://example.com/commit/885976c))
+* **image:** Keep another change
+* **image:** add private browser-based image converter ([#44](https://example.com/pull/44)) ([f615944](https://example.com/commit/f615944))
+`;
+
+  expect(parseChangelog(markdown)[0]?.changes.features).toEqual([
+    {
+      scope: 'image',
+      description: 'add private browser-based image converter',
+    },
+    { scope: 'image', description: 'Keep another change' },
+  ]);
+});
+
+test('deduplicates unscoped entries within the same release section', () => {
+  const markdown = `# Changelog
+
+## 1.0.0 (2026-11-16)
+
+### Features
+
+* Add converter ([abc123](https://example.com/commit/abc123))
+* Add converter ([def456](https://example.com/commit/def456))
+`;
+
+  expect(parseChangelog(markdown)[0]?.changes.features).toEqual([
+    { description: 'Add converter' },
+  ]);
+});
+
+test('preserves matching descriptions with different scopes or no scope', () => {
+  const markdown = `# Changelog
+
+## 1.0.0 (2026-11-16)
+
+### Features
+
+* **image:** Add converter
+* **pdf:** Add converter
+* Add converter
+`;
+
+  expect(parseChangelog(markdown)[0]?.changes.features).toEqual([
+    { scope: 'image', description: 'Add converter' },
+    { scope: 'pdf', description: 'Add converter' },
+    { description: 'Add converter' },
+  ]);
+});
+
+test('preserves matching entries in different sections and releases', () => {
+  const markdown = `# Changelog
+
+## 1.1.0 (2026-11-16)
+
+### Features
+
+* **image:** Update converter
+
+### Bug Fixes
+
+* **image:** Update converter
+
+## 1.0.0 (2026-11-15)
+
+### Features
+
+* **image:** Update converter
+`;
+  const releases = parseChangelog(markdown);
+  const expected = [{ scope: 'image', description: 'Update converter' }];
+
+  expect(releases[0]?.changes.features).toEqual(expected);
+  expect(releases[0]?.changes.fixes).toEqual(expected);
+  expect(releases[1]?.changes.features).toEqual(expected);
+});
+
+test('deduplicates entries across repeated headings for the same section', () => {
+  const markdown = `# Changelog
+
+## 1.0.0 (2026-11-16)
+
+### Features
+
+* **image:** Add converter
+
+### Features
+
+* **image:** Add converter
+`;
+
+  expect(parseChangelog(markdown)[0]?.changes.features).toEqual([
+    { scope: 'image', description: 'Add converter' },
+  ]);
+});
+
+test('keeps deduplication isolated between parser calls', () => {
+  const first = parseChangelog(validChangelog);
+
+  expect(parseChangelog(validChangelog)).toEqual(first);
+});
+
 test('maps unrecognized sections to other', () => {
   const markdown = `# Changelog
 
