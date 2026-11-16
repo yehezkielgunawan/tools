@@ -182,6 +182,26 @@ export const tools = [
     icon: 'image',
   },
   {
+    id: 'image-converter',
+    name: 'Image Converter',
+    description:
+      'Convert HEIC, JPG, PNG, and SVG images to JPG or PNG locally in your browser.',
+    path: '/image/image-converter',
+    category: 'image',
+    keywords: [
+      'image',
+      'converter',
+      'convert',
+      'heic',
+      'heif',
+      'jpg',
+      'jpeg',
+      'png',
+      'svg',
+    ],
+    icon: 'image',
+  },
+  {
     id: 'image-watermark',
     name: 'Image Watermark',
     description:

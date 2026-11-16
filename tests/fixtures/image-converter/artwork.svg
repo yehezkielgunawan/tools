@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="32" viewBox="0 0 48 32">
+  <title>Red-to-blue gradient with a transparent right edge</title>
+  <defs>
+    <linearGradient id="paint">
+      <stop offset="0" stop-color="#ff0000"/>
+      <stop offset="1" stop-color="#0000ff"/>
+    </linearGradient>
+    <clipPath id="crop"><rect x="0" y="0" width="32" height="32"/></clipPath>
+  </defs>
+  <rect width="48" height="32" fill="url(#paint)" clip-path="url(#crop)"/>
+</svg>

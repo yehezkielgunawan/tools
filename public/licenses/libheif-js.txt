@@ -1,0 +1,23 @@
+HEIC decoder notices
+===================
+
+Image Converter uses the unmodified libheif-js 1.23.5 distribution, an
+Emscripten build of libheif, under GNU LGPL version 3.
+
+The complete bundled license text (including GNU GPL version 3) is served at:
+/licenses/libheif-LGPL-GPL.txt
+
+Package and JavaScript wrapper source:
+https://www.npmjs.com/package/libheif-js/v/1.23.5
+https://github.com/catdad-experiments/libheif-js
+
+Corresponding Emscripten build source and build instructions:
+https://github.com/catdad-experiments/libheif-emscripten/tree/v1.23.5
+
+The upstream library is not modified. To use a modified compatible decoder,
+replace libheif-js/libheif-wasm/libheif-bundle.mjs in your local installation
+and rebuild this application with pnpm run build. The integration is isolated
+in src/tools/image-converter/heic.worker.ts and heicDecoder.ts.
+
+Modification of the library and reverse engineering for debugging such
+modifications are permitted under the LGPL. No warranty is provided.
