@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.18.0](https://github.com/yehezkielgunawan/tools/compare/v1.17.0...v1.18.0) (2026-11-16)
+
+
+### Features
+
+* **image:** add private browser-based image converter ([885976c](https://github.com/yehezkielgunawan/tools/commit/885976cc3f68ad687253e93c10b4beb915585662))
+* **image:** add private browser-based image converter ([f615944](https://github.com/yehezkielgunawan/tools/commit/f61594447fdfdda29ca92a07174b3474b327895f))
+
 ## [1.17.0](https://github.com/yehezkielgunawan/tools/compare/v1.16.0...v1.17.0) (2026-11-02)
 
 
