@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.18.1](https://github.com/yehezkielgunawan/tools/compare/v1.18.0...v1.18.1) (2026-11-16)
+
+
+### Bug Fixes
+
+* **changelog:** deduplicate normalized release entries ([46807d5](https://github.com/yehezkielgunawan/tools/commit/46807d5b8978fca068a3943c8999b972b3a62755))
+* **changelog:** deduplicate normalized release entries ([d72a17a](https://github.com/yehezkielgunawan/tools/commit/d72a17a13cbb89febbc558fce09a594cd1c04b68))
+
 ## [1.18.0](https://github.com/yehezkielgunawan/tools/compare/v1.17.0...v1.18.0) (2026-11-16)
 
 
