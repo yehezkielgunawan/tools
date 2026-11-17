@@ -1,5 +1,5 @@
-import { readHeic } from './heicDecoder';
-import type { HeicRequest, HeicResponse } from './heicTypes';
+import { readHeic } from './decoder';
+import type { HeicRequest, HeicResponse } from './types';
 
 const scope = self as unknown as {
   onmessage: ((event: MessageEvent<HeicRequest>) => void) | null;
@@ -13,7 +13,12 @@ scope.onmessage = async ({ data }) => {
       'libheif-js/libheif-wasm/libheif-bundle.mjs'
     );
     const library = await factory();
-    const result = await readHeic(library, data.buffer, data.operation);
+    const result = await readHeic(
+      library,
+      data.buffer,
+      data.operation,
+      data.maxEdge,
+    );
     scope.postMessage(
       { ok: true, result },
       result.pixels ? [result.pixels] : [],

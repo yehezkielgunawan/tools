@@ -1,5 +1,6 @@
 import { ArrowRight, Download, Image as ImageIcon } from 'lucide-react';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router';
 import ToolLayout from '../../components/layout/ToolLayout';
 import {
   calculateOutputDimensions,
@@ -197,8 +198,10 @@ export default function ImageConverter() {
             className="text-xs leading-5 text-base-content/75"
             id="converter-file-help"
           >
-            One image at a time · up to 32 MB and 24 megapixels. SVGs up to 2
-            MB. HEIC/HEIF containers use the primary photo, not every frame.
+            One image at a time · up to 32 MB. JPEG/PNG/SVG: up to 24
+            megapixels. HEIC/HEIF: up to 50 megapixels; large files may need a
+            desktop browser. SVGs up to 2 MB. HEIC/HEIF containers use the
+            primary photo, not every frame.
           </p>
           {selected ? (
             <div className="flex items-center gap-3 rounded-box border border-base-300 bg-base-200/40 p-4">
@@ -295,6 +298,17 @@ export default function ImageConverter() {
               4,096 px per edge). Choose a smaller maximum long edge to
               continue.
             </p>
+          ) : null}
+          {needsResize && selected?.info.format === 'heic' ? (
+            <div className="space-y-2 rounded-box border border-base-300 p-3 text-sm">
+              <p>
+                For a smaller JPG or PNG, open Image Compressor and select this
+                photo again. It defaults to 2048 px and JPG quality 82.
+              </p>
+              <Link className="link" to="/image/image-compressor">
+                Open Image Compressor
+              </Link>
+            </div>
           ) : null}
           {format === 'image/jpeg' ? (
             <div className="space-y-3">

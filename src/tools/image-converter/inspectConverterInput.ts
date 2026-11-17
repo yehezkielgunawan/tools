@@ -2,8 +2,8 @@ import {
   inspectImageFile,
   MAX_INPUT_BYTES,
 } from '../image-compressor/imageUtils';
+import { hasHeicHeader, inspectPhotoInput } from '../image-shared/photoInput';
 import type { ConverterInputInfo } from './converterTypes';
-import { runHeicWorker } from './decodeHeic';
 import { prepareSvg } from './prepareSvg';
 
 export async function inspectConverterInput(
@@ -24,41 +24,9 @@ export async function inspectConverterInput(
       height: info.height,
     };
   }
-  if (
-    prefix.length >= 16 &&
-    String.fromCharCode(...prefix.slice(4, 8)) === 'ftyp'
-  ) {
-    const boxSize = new DataView(prefix.buffer).getUint32(0);
-    const brands: string[] = [];
-    for (
-      let offset = 8;
-      offset + 4 <= Math.min(prefix.length, boxSize);
-      offset += 4
-    ) {
-      if (offset !== 12)
-        brands.push(String.fromCharCode(...prefix.slice(offset, offset + 4)));
-    }
-    if (
-      brands.some((brand) => ['heic', 'heix', 'hevc', 'hevx'].includes(brand))
-    ) {
-      const type = file.type.toLowerCase();
-      if (
-        type &&
-        ![
-          'application/octet-stream',
-          'image/heic',
-          'image/heif',
-          'image/heic-sequence',
-          'image/heif-sequence',
-          'image/x-heic',
-          'image/x-heif',
-        ].includes(type)
-      ) {
-        throw new Error('The file type does not match its image contents.');
-      }
-      const { width, height } = await runHeicWorker(file, 'inspect', signal);
-      return { format: 'heic', width, height };
-    }
+  if (hasHeicHeader(prefix)) {
+    const { width, height } = await inspectPhotoInput(file, signal);
+    return { format: 'heic', width, height };
   }
   const text = new TextDecoder().decode(prefix).trimStart();
   if (

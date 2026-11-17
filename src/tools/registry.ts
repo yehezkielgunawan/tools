@@ -175,10 +175,19 @@ export const tools = [
     id: 'image-compressor',
     name: 'Image Compressor',
     description:
-      'Compress JPEG and PNG images in your browser with Canvas or pixo-wasm.',
+      'Compress JPEG, PNG, and HEIC/HEIF photos to JPEG or PNG in your browser with Canvas or pixo-wasm.',
     path: '/image/image-compressor',
     category: 'image',
-    keywords: ['image', 'compressor', 'jpeg', 'png', 'wasm', 'canvas'],
+    keywords: [
+      'image',
+      'compressor',
+      'jpeg',
+      'png',
+      'heic',
+      'heif',
+      'wasm',
+      'canvas',
+    ],
     icon: 'image',
   },
   {
