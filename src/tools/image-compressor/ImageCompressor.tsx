@@ -8,11 +8,11 @@ import {
 } from 'lucide-react';
 import { type ChangeEvent, useEffect, useRef, useState } from 'react';
 import ToolLayout from '../../components/layout/ToolLayout';
+import { inspectPhotoInput, type PhotoInfo } from '../image-shared/photoInput';
+import { resolvePhotoOutputFormat } from '../image-shared/preparePhoto';
 import {
   compareImageSizes,
-  type ImageInfo,
   type ImageMimeType,
-  inspectImageFile,
   MAX_CANVAS_EDGE,
   MAX_EDGE_OPTIONS,
   MAX_ORIGINAL_OUTPUT_PIXELS,
@@ -27,7 +27,7 @@ import {
 
 interface SelectedImage {
   file: File;
-  info: ImageInfo;
+  info: PhotoInfo;
 }
 
 interface CompressionArtifact extends ImageCompressionResult {
@@ -58,7 +58,7 @@ function getErrorMessage(error: unknown): string {
     : 'The image could not be compressed. Try another photo.';
 }
 
-function isOriginalWithinLimits(info: ImageInfo | null): boolean {
+function isOriginalWithinLimits(info: PhotoInfo | null): boolean {
   return (
     info === null ||
     (info.width <= MAX_CANVAS_EDGE &&
@@ -71,7 +71,11 @@ function effectiveOutputFormat(
   format: ImageOutputFormat,
   selected: SelectedImage | null,
 ): ImageMimeType | null {
-  return format === 'same' ? (selected?.info.mimeType ?? null) : format;
+  return selected
+    ? resolvePhotoOutputFormat(format, selected.info.mimeType)
+    : format === 'same'
+      ? null
+      : format;
 }
 
 export default function ImageCompressor() {
@@ -110,6 +114,7 @@ export default function ImageCompressor() {
   ): Promise<void> => {
     const file = event.currentTarget.files?.[0];
     event.currentTarget.value = '';
+    if (!file) return;
 
     generationRef.current += 1;
     activeJobRef.current?.abort();
@@ -119,21 +124,36 @@ export default function ImageCompressor() {
     setStatus(null);
     clearArtifact();
 
-    if (!file) return;
-
     const selectionGeneration = generationRef.current;
+    const controller = new AbortController();
+    activeJobRef.current = controller;
+    setIsProcessing(true);
+    setStatus({ kind: 'info', message: 'Checking image dimensions locally…' });
     try {
-      const info = await inspectImageFile(file);
+      const info = await inspectPhotoInput(file, controller.signal);
       if (selectionGeneration !== generationRef.current) return;
 
       setSelected({ file, info });
+      if (info.mimeType === 'image/heic' || info.mimeType === 'image/heif') {
+        setMaxEdge(2048);
+        setQuality(82);
+      }
       setStatus({
         kind: 'success',
         message: 'Image ready. It will stay on this device while you work.',
       });
     } catch (error) {
       if (selectionGeneration === generationRef.current) {
-        setStatus({ kind: 'error', message: getErrorMessage(error) });
+        setStatus(
+          controller.signal.aborted
+            ? { kind: 'info', message: 'Image checking cancelled.' }
+            : { kind: 'error', message: getErrorMessage(error) },
+        );
+      }
+    } finally {
+      if (selectionGeneration === generationRef.current) {
+        activeJobRef.current = null;
+        setIsProcessing(false);
       }
     }
   };
@@ -205,7 +225,7 @@ export default function ImageCompressor() {
   return (
     <ToolLayout
       category="Image"
-      description="Resize and compress a JPEG or PNG with your choice of browser Canvas or pixo-wasm. Your image stays on this device."
+      description="Resize and compress JPEG, PNG, or HEIC/HEIF photos into JPEG or PNG with browser Canvas or pixo-wasm. Your image stays on this device."
       title="Image Compressor"
     >
       <div className="space-y-6">
@@ -217,13 +237,13 @@ export default function ImageCompressor() {
             </h2>
             <span className="badge badge-ghost gap-1.5">
               <ImageIcon aria-hidden="true" size={13} />
-              JPEG or PNG · up to 32 MB
+              JPEG, PNG, HEIC/HEIF · up to 32 MB
             </span>
           </div>
           <input
-            accept="image/jpeg,image/png"
+            accept=".heic,.heif,.jpg,.jpeg,.png,image/jpeg,image/png,image/heic,image/heif"
             aria-describedby="image-file-help"
-            aria-label="Choose a JPEG or PNG image"
+            aria-label="Choose a JPEG or PNG image, or a HEIC/HEIF photo"
             className="file-input w-full"
             disabled={isProcessing}
             id="image-file"
@@ -234,8 +254,11 @@ export default function ImageCompressor() {
             className="text-xs leading-5 text-base-content/75"
             id="image-file-help"
           >
-            One image at a time. Photos above 24 megapixels may need to be
-            resized on your device first.
+            One image at a time. JPEG/PNG: up to 24 megapixels. HEIC/HEIF: up to
+            50 megapixels, including typical 48 MP dimensions. Large HEIC
+            decoding still needs substantial memory; a desktop browser may be
+            required. HEIC is saved as JPEG by default, not as another HEIC
+            file.
           </p>
           {selected ? (
             <div className="flex items-center gap-3 rounded-box border border-base-300 bg-base-200/40 p-3">
@@ -318,7 +341,7 @@ export default function ImageCompressor() {
                 }
                 value={format}
               >
-                <option value="same">Keep original</option>
+                <option value="same">Keep original (JPG for HEIC)</option>
                 <option value="image/jpeg">JPEG</option>
                 <option value="image/png">PNG</option>
               </select>

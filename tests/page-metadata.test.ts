@@ -33,7 +33,7 @@ test('resolves metadata for the image compressor tool', () => {
     browserTitle: 'Image Compressor | Yehezgun Tools',
     imageTitle: 'Image Compressor',
     description:
-      'Compress JPEG and PNG images in your browser with Canvas or pixo-wasm.',
+      'Compress JPEG, PNG, and HEIC/HEIF photos to JPEG or PNG in your browser with Canvas or pixo-wasm.',
     canonicalUrl: 'https://tools.yehezgun.com/image/image-compressor',
   });
 });

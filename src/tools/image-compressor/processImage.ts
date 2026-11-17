@@ -1,10 +1,11 @@
+import type { PhotoMimeType } from '../image-shared/photoInput';
+import {
+  type PreparedPhoto,
+  prepareCompressionPhoto,
+} from '../image-shared/preparePhoto';
 import { encodeWithCanvas } from './canvasEncoder';
 import type { ImageMimeType, MaxEdgeOption } from './imageUtils';
-import {
-  type PreparedImage,
-  prepareImage,
-  releaseCanvas,
-} from './prepareImage';
+import { releaseCanvas } from './prepareImage';
 import { encodeWithWasm } from './wasmEncoder';
 
 export type CompressionEngine = 'canvas' | 'wasm';
@@ -23,7 +24,7 @@ export interface ImageCompressionResult {
   width: number;
   height: number;
   mimeType: ImageMimeType;
-  inputMimeType: ImageMimeType;
+  inputMimeType: PhotoMimeType;
 }
 
 export interface CompressionAdapters {
@@ -31,14 +32,15 @@ export interface CompressionAdapters {
     file: File,
     maxEdge: MaxEdgeOption,
     outputFormat: ImageOutputFormat,
-  ) => Promise<PreparedImage>;
+    signal?: AbortSignal,
+  ) => Promise<PreparedPhoto>;
   encodeWithCanvas: typeof encodeWithCanvas;
   encodeWithWasm: typeof encodeWithWasm;
   releaseCanvas: typeof releaseCanvas;
 }
 
 const defaultAdapters: CompressionAdapters = {
-  prepareImage,
+  prepareImage: prepareCompressionPhoto,
   encodeWithCanvas,
   encodeWithWasm,
   releaseCanvas,
@@ -60,6 +62,7 @@ export async function compressImage(
     file,
     options.maxEdge,
     options.format,
+    signal,
   );
 
   try {

@@ -29,7 +29,7 @@ test('renders mobile-ready JPEG and PNG controls with Canvas selected by default
   ).toBeInTheDocument();
   expect(screen.getByLabelText(/choose a jpeg or png image/i)).toHaveAttribute(
     'accept',
-    'image/jpeg,image/png',
+    expect.stringContaining('image/heic'),
   );
   expect(
     screen.getByLabelText(/choose a jpeg or png image/i),
