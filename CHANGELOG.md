@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.19.0](https://github.com/yehezkielgunawan/tools/compare/v1.18.1...v1.19.0) (2026-11-17)
+
+
+### Features
+
+* **image-compressor:** accept HEIC photos with safe defaults ([0e213be](https://github.com/yehezkielgunawan/tools/commit/0e213be4b8aa2f4b24613e684e025afe2371f2ac))
+* **image-compressor:** support HEIC photos and bounded resizing ([3f3ec01](https://github.com/yehezkielgunawan/tools/commit/3f3ec0110650e555b44a088be52e3d1c03056a3b))
+* **image:** share bounded HEIC decoding and resizing ([e3bf9d0](https://github.com/yehezkielgunawan/tools/commit/e3bf9d0bec6c77ce871dc5d43a6aff6c6571c36d))
+
 ## [1.18.1](https://github.com/yehezkielgunawan/tools/compare/v1.18.0...v1.18.1) (2026-11-16)
 
 
