@@ -1,10 +1,15 @@
-import { assertConverterDimensions } from './converterLimits';
-import type { HeicRequest, HeicResponse, HeicResult } from './heicTypes';
+import {
+  calculateOutputDimensions,
+  type MaxEdgeOption,
+} from '../../image-compressor/imageUtils';
+import { assertHeicDimensions } from './limits';
+import type { HeicRequest, HeicResponse, HeicResult } from './types';
 
 export function runHeicWorker(
   file: File,
   operation: HeicRequest['operation'],
   signal?: AbortSignal,
+  maxEdge: MaxEdgeOption = 'original',
 ): Promise<HeicResult> {
   return new Promise((resolve, reject) => {
     if (signal?.aborted) {
@@ -17,7 +22,7 @@ export function runHeicWorker(
       );
       return;
     }
-    const worker = new Worker(new URL('./heic.worker.ts', import.meta.url), {
+    const worker = new Worker(new URL('./worker.ts', import.meta.url), {
       type: 'module',
       name: 'image-converter-heic',
     });
@@ -46,7 +51,7 @@ export function runHeicWorker(
       event.preventDefault();
       finish(
         new Error(
-          'The HEIC decoder could not start. Try another browser or a smaller photo.',
+          'HEIC processing failed. Your device may not have enough memory; try a desktop browser or a smaller photo.',
         ),
       );
     };
@@ -55,7 +60,30 @@ export function runHeicWorker(
     worker.onmessage = ({ data }: MessageEvent<HeicResponse>) => {
       try {
         if (!data.ok) throw new Error(data.message);
-        assertConverterDimensions(data.result.width, data.result.height);
+        assertHeicDimensions(data.result.width, data.result.height);
+        if (
+          !Number.isSafeInteger(data.result.imageCount) ||
+          data.result.imageCount < 1
+        ) {
+          throw new Error('The HEIC decoder returned invalid photo metadata.');
+        }
+        if (operation === 'decode') {
+          const { sourceWidth, sourceHeight } = data.result;
+          assertHeicDimensions(sourceWidth ?? 0, sourceHeight ?? 0);
+          const expected = calculateOutputDimensions(
+            sourceWidth ?? 0,
+            sourceHeight ?? 0,
+            maxEdge,
+          );
+          if (
+            expected.width !== data.result.width ||
+            expected.height !== data.result.height
+          ) {
+            throw new Error(
+              'The HEIC decoder did not return the requested output size.',
+            );
+          }
+        }
         if (
           operation === 'decode' &&
           (!(data.result.pixels instanceof ArrayBuffer) ||
@@ -75,9 +103,10 @@ export function runHeicWorker(
       (buffer) => {
         if (settled) return;
         try {
-          worker.postMessage({ buffer, operation } satisfies HeicRequest, [
-            buffer,
-          ]);
+          worker.postMessage(
+            { buffer, operation, maxEdge } satisfies HeicRequest,
+            [buffer],
+          );
         } catch (error) {
           finish(
             error instanceof Error ? error : new Error('HEIC decoding failed.'),

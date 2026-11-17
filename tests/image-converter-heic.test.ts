@@ -1,20 +1,23 @@
 import { expect, rs, test } from '@rstest/core';
-import { runHeicWorker } from '../src/tools/image-converter/decodeHeic';
-import { readHeic } from '../src/tools/image-converter/heicDecoder';
-import type { HeifLibrary } from '../src/tools/image-converter/heicTypes';
+import { runHeicWorker } from '../src/tools/image-shared/heic/client';
+import { readHeic } from '../src/tools/image-shared/heic/decoder';
+import type { HeifLibrary } from '../src/tools/image-shared/heic/types';
 
 function library(width = 4, height = 3) {
   const free = rs.fn();
   const contextFree = rs.fn();
-  const display = rs.fn(
-    (
-      target: { data: Uint8ClampedArray },
-      callback: (value: unknown) => void,
-    ) => {
-      target.data.fill(127);
-      callback(target);
-    },
-  );
+  const display = rs.fn(() => ({
+    image: 321,
+    channels: [
+      {
+        id: 3,
+        width,
+        height,
+        stride: width * 4,
+        data: new Uint8Array(width * height * 4).fill(127),
+      },
+    ],
+  }));
   const thumbnail = {
     get_width: () => 1,
     get_height: () => 1,
@@ -24,12 +27,18 @@ function library(width = 4, height = 3) {
   };
   const primary = {
     get_width: () => width,
+    handle: 123,
     get_height: () => height,
     is_primary: () => true,
     display,
     free,
   };
   const lib = {
+    heif_colorspace: { heif_colorspace_RGB: 1 },
+    heif_chroma: { heif_chroma_interleaved_RGBA: 2 },
+    heif_channel: { heif_channel_interleaved: 3 },
+    heif_js_decode_image2: display,
+    heif_image_release: rs.fn(),
     HeifDecoder: class {
       decoder = 42;
       decode() {
@@ -46,6 +55,7 @@ test('inspects the primary HEIC image without decoding pixels and releases handl
   await expect(readHeic(lib, new ArrayBuffer(1), 'inspect')).resolves.toEqual({
     width: 4,
     height: 3,
+    imageCount: 2,
   });
   expect(display).not.toHaveBeenCalled();
   expect(free).toHaveBeenCalledTimes(2);
@@ -61,9 +71,9 @@ test('decodes only the primary HEIC image into transferable RGBA pixels', async 
 });
 
 test('checks primary dimensions before allocating or decoding pixels', async () => {
-  const { lib, free, contextFree, display } = library(5000, 5000);
+  const { lib, free, contextFree, display } = library(10_000, 5001);
   await expect(readHeic(lib, new ArrayBuffer(1), 'decode')).rejects.toThrow(
-    /24 megapixel/i,
+    /50 megapixel/i,
   );
   expect(display).not.toHaveBeenCalled();
   expect(free).toHaveBeenCalledTimes(2);
